@@ -31,7 +31,16 @@ const applyMeta = () => {
   document.documentElement.lang = lang.startsWith('zh') ? 'zh-CN' : lang;
   document.title = i18n.t('meta.title');
 };
-i18n.on('initialized', applyMeta);
-i18n.on('languageChanged', applyMeta);
+i18n.on('initialized', () => {
+  const lang = i18n.resolvedLanguage || 'en';
+  document.documentElement.lang = lang.startsWith('zh') ? 'zh-CN' : lang;
+  document.title = i18n.t('meta.title');
+});
+i18n.on('languageChanged', () => {
+  const lang = i18n.resolvedLanguage || 'en';
+  document.documentElement.lang = lang.startsWith('zh') ? 'zh-CN' : lang;
+  document.title = i18n.t('meta.title');
+});
+
 
 export default i18n;
