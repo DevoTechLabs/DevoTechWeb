@@ -51,3 +51,34 @@ small{color:var(--muted)}
 /* Fluid type */
 h2{font-size:clamp(20px,2.8vw,28px)}
 p,small{line-height:1.6}
+
+/* full-bleed section that escapes the container */
+.full-bleed{
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
+/* hero media fills the viewport width & scales nicely */
+.hero-media{
+  position: relative;
+  height: clamp(420px, 82svh, 900px);
+  overflow: hidden;
+}
+.hero-media img{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0;          /* override global img rounding */
+}
+
+/* optional: container a bit wider on large screens */
+:root{ --container-max: 1100px; }
+.container{ width: min(var(--container-max), 100% - 32px); margin-inline: auto; }
+@media (min-width: 1400px){ :root{ --container-max: 1280px; } }
+@media (min-width: 1700px){ :root{ --container-max: 1400px; } }

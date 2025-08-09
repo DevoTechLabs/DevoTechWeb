@@ -85,52 +85,39 @@ function Logo() {
 }
 
 function Hero() {
-  const ref = useRef(null);
-  // 基于 section 自身滚动的视差
+  const ref = React.useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], ["0vh", "-20vh"]); // 背景图上移
+  const y = useTransform(scrollYProgress, [0, 1], ["0vh", "-20vh"]);
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
 
   return (
-    <section id="home" className="hero" ref={ref} aria-label="Hero">
-      <motion.div
-        aria-hidden
-        style={{
-          position: "absolute", inset: -40, zIndex: -1, background:
-            "radial-gradient(1200px 600px at 50% 20%, rgba(96,165,250,.25), transparent 60%)",
-          filter: "blur(20px)"
-        }}
-      />
-      <motion.img
-        src="https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1600&auto=format&fit=crop"
-        alt=""
-        loading="lazy"
-        style={{
-          position: "absolute", inset: 0, objectFit: "cover", width: "100%", height: "100%",
-          transformOrigin: "center"
-        }}
-        // FIX: 用 useTransform 绑定 y/scale
-        animate={{}}
-        transition={{ type: "spring", stiffness: 60, damping: 20 }}
-        as={motion.img}
-      />
-      <motion.div style={{ y, scale, position: "absolute", inset: 0, zIndex: -2 }} />
-      <div className="container" style={{ textAlign: "center" }}>
-        <span className="badge">Empower Your Digital Future</span>
-        <h1 style={{ marginTop: 14 }}>
-          从想法到上线，<br />DevoTech 助你高效落地
-        </h1>
-        <p style={{ color: "var(--muted)" }}>
-          定制软件 · 移动端 · AI & 数据 · 云原生 · 交付与运维
-        </p>
-        <div style={{ marginTop: 18, display: "flex", gap: 10, justifyContent: "center" }}>
-          <a className="btn" href="#products">查看产品</a>
-          <a className="btn ghost" href="#contact">免费咨询</a>
+    <section id="home" className="hero full-bleed" ref={ref} aria-label="Hero">
+      {/* full-bleed image */}
+      <div className="hero-media">
+        <motion.img
+          src="https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=2400&auto=format&fit=crop"
+          alt=""
+          style={{ y, scale }}
+          loading="lazy"
+        />
+      </div>
+
+      {/* centered content sits on top but stays within normal container width */}
+      <div className="container" style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center" }}>
+        <div style={{ textAlign: "center" }}>
+          <span className="badge">Empower Your Digital Future</span>
+          <h1 style={{ marginTop: 14 }}>从想法到上线，<br/>DevoTech 助你高效落地</h1>
+          <p style={{ color: "var(--muted)" }}>定制软件 · 移动端 · AI & 数据 · 云原生 · 交付与运维</p>
+          <div style={{ marginTop: 18, display: "flex", gap: 10, justifyContent: "center" }}>
+            <a className="btn" href="#products">查看产品</a>
+            <a className="btn ghost" href="#contact">免费咨询</a>
+          </div>
         </div>
       </div>
     </section>
   );
 }
+
 
 const FadeIn = ({ children, delay = 0 }) => (
   <motion.div
@@ -479,14 +466,6 @@ function Footer() {
 }
 
 export default function App() {
-  useEffect(() => {
-    // SSR 安全注入样式
-    const style = document.createElement("style");
-    style.innerHTML = baseStyles;
-    document.head.appendChild(style);
-    return () => { document.head.removeChild(style); };
-  }, []);
-
   return (
     <>
       <Header />
