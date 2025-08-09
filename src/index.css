@@ -1,96 +1,53 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+/* src/index.css */
+:root{--bg:#0b1120;--fg:#e5e7eb;--muted:#94a3b8;--card:#111827;--brand:#60a5fa;}
+:root[data-theme="light"]{--bg:#ffffff;--fg:#0b1120;--muted:#334155;--card:#f1f5f9;--brand:#2563eb;}
+*{box-sizing:border-box}
+html,body,#root{height:100%}
+html,body{overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial}
+a{color:inherit;text-decoration:none}
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+/* Layout */
+.container{width:min(1100px,100% - 32px);margin-inline:auto;padding:0}
+.nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+.nav a{margin:0 10px;opacity:.85}
+.header{position:sticky;top:0;z-index:50;backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.06)}
+.section{padding:72px 0;border-top:1px solid rgba(255,255,255,.06)}
+@media (max-width:700px){ .section{padding:48px 0} }
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.card{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:18px}
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Hero */
+.hero{position:relative;min-height:72svh;display:grid;place-items:center;overflow:hidden}
+.hero h1{font-size:clamp(32px,5vw,56px);margin:0;text-align:center;line-height:1.1}
+
+/* UI bits */
+.btn{background:var(--brand);border:0;color:#fff;padding:12px 18px;border-radius:10px;font-weight:600;cursor:pointer}
+.btn.ghost{background:transparent;border:1px solid var(--brand);color:var(--brand)}
+.menu-btn{} /* hidden on desktop below */
+.badge{display:inline-block;padding:6px 10px;border:1px solid rgba(255,255,255,.18);border-radius:999px;font-size:12px;opacity:.8}
+.logoRow{display:flex;gap:22px;flex-wrap:wrap;opacity:.8}
+footer{padding:40px 0;border-top:1px solid rgba(255,255,255,.06)}
+.kbd{font-family:ui-monospace,Menlo,Consolas,monospace;background:rgba(255,255,255,.08);padding:2px 6px;border-radius:6px;border:1px solid rgba(255,255,255,.12)}
+img{max-width:100%;height:auto;display:block;border-radius:10px}
+input,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:transparent;color:var(--fg)}
+fieldset{border:0;padding:0;margin:0 0 12px 0}
+label{display:block;margin:0 0 6px 0;font-size:14px;color:var(--muted)}
+small{color:var(--muted)}
+
+/* Before/After slider */
+.baWrap{position:relative;overflow:hidden;border-radius:12px}
+.baWrap img{display:block;width:100%;height:auto}
+.baTop{position:absolute;inset:0;overflow:hidden}
+.baHandle{position:absolute;top:0;bottom:0;width:2px;background:var(--brand);box-shadow:0 0 0 2px rgba(0,0,0,.2)}
+
+/* Responsive nav */
+.nav-desktop{display:none}
+@media (min-width:900px){
+  .nav-desktop{display:flex !important;gap:12px}
+  .menu-btn{display:none}
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
-
-/* Container shrinks on small screens, caps on large */
-.container{
-  width: min(1100px, 100% - 32px);  /* 16px side padding each */
-  margin-inline: auto;
-  padding: 0;                       /* padding now handled by width calc */
-}
-
-/* Auto-fit cards: 1–4 columns depending on space */
-.grid{
-  display: grid;
-  gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-}
-
-/* Fluid type scale */
-h1{ font-size: clamp(32px, 5vw, 56px); }
-h2{ font-size: clamp(20px, 2.8vw, 28px); }
-p, small{ line-height: 1.6; }
-
-/* Responsive hero height: fix mobile address-bar jump */
-.hero{ min-height: 72svh; } /* use svh instead of vh on mobile */
-
-/* Images should never overflow */
-img{ max-width: 100%; height: auto; border-radius: 10px; }
-
-/* Kill accidental horizontal scroll on tiny devices */
-html,body{ overflow-x: hidden; }
+/* Fluid type */
+h2{font-size:clamp(20px,2.8vw,28px)}
+p,small{line-height:1.6}

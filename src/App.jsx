@@ -4,42 +4,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useMotionTemplate } from "framer-motion";
 
-// —— 基础样式（你可移到独立 CSS 文件）——
-const baseStyles = `
-:root{--bg:#0b1120;--fg:#e5e7eb;--muted:#94a3b8;--card:#111827;--brand:#60a5fa;}
-:root[data-theme="light"]{--bg:#ffffff;--fg:#0b1120;--muted:#334155;--card:#f1f5f9;--brand:#2563eb;}
-*{box-sizing:border-box} html,body,#root{height:100%}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial}
-a{color:inherit;text-decoration:none}
-.container{max-width:1100px;margin:0 auto;padding:0 20px}
-.btn{background:var(--brand);border:0;color:#fff;padding:12px 18px;border-radius:10px;font-weight:600;cursor:pointer}
-.btn.ghost{background:transparent;border:1px solid var(--brand);color:var(--brand)}
-.header{position:sticky;top:0;z-index:50;backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.06)}
-.nav{display:flex;align-items:center;justify-content:space-between;height:64px}
-.nav a{margin:0 10px;opacity:.85}
-.hero{position:relative;min-height:72vh;display:grid;place-items:center;overflow:hidden}
-.hero h1{font-size:clamp(32px,5vw,56px);margin:0;text-align:center;line-height:1.1}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.card{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:18px}
-.section{padding:72px 0;border-top:1px solid rgba(255,255,255,.06)}
-.badge{display:inline-block;padding:6px 10px;border:1px solid rgba(255,255,255,.18);border-radius:999px;font-size:12px;opacity:.8}
-.logoRow{display:flex;gap:22px;flex-wrap:wrap;opacity:.8}
-footer{padding:40px 0;border-top:1px solid rgba(255,255,255,.06)}
-.kbd{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;background:rgba(255,255,255,.08);padding:2px 6px;border-radius:6px;border:1px solid rgba(255,255,255,.12)}
-img{max-width:100%;display:block;border-radius:10px}
-input,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:transparent;color:var(--fg)}
-fieldset{border:0;padding:0;margin:0 0 12px 0}
-label{display:block;margin:0 0 6px 0;font-size:14px;color:var(--muted)}
-small{color:var(--muted)}
-/* before/after 滑块 */
-.baWrap{position:relative;overflow:hidden;border-radius:12px}
-.baWrap img{display:block;width:100%;height:auto}
-.baTop{position:absolute;inset:0;overflow:hidden}
-.baHandle{position:absolute;top:0;bottom:0;width:2px;background:var(--brand);box-shadow:0 0 0 2px rgba(0,0,0,.2)}
-/* 响应 */
-@media (max-width:900px){.grid{grid-template-columns:1fr}}
-`;
-
 function useDarkMode() {
   const [theme, setTheme] = useState(
     typeof document !== "undefined"
@@ -54,41 +18,62 @@ function useDarkMode() {
 }
 
 function Header() {
-  // 全局滚动进度
   const { scrollYProgress } = useScroll();
   const bgOpacity = useTransform(scrollYProgress, [0, 0.15, 1], [0.25, 0.6, 0.85]);
-  const bg = useMotionTemplate`rgba(2,6,23, ${bgOpacity})`; // FIX: 用 useMotionTemplate 替代 .to
+  const bg = useMotionTemplate`rgba(2,6,23, ${bgOpacity})`;
   const { theme, setTheme } = useDarkMode();
+  const [open, setOpen] = React.useState(false);
+
+  useEffect(() => {
+    const onHash = () => setOpen(false);
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
 
   return (
     <motion.header className="header" style={{ backgroundColor: bg }}>
       <div className="container nav">
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <Logo />
-          <span style={{ fontWeight: 800, letterSpacing: 0.3 }}>DevoTech</span>
+          <Logo /><span style={{ fontWeight: 800, letterSpacing: 0.3 }}>DevoTech</span>
         </div>
-        <nav aria-label="Primary">
-          <a href="#home">首页</a>
-          <a href="#products">产品</a>
-          <a href="#services">服务</a>
-          <a href="#portfolio">案例</a>
-          <a href="#team">团队</a>
-          <a href="#careers">招聘</a>
-          <a href="#blog">博客</a>
-          <a href="#faq">FAQ</a>
-          <a href="#contact">联系</a>
+
+        {/* desktop */}
+        <nav className="nav-desktop" aria-label="Primary">
+          <a href="#home">首页</a><a href="#products">产品</a><a href="#services">服务</a>
+          <a href="#portfolio">案例</a><a href="#team">团队</a><a href="#careers">招聘</a>
+          <a href="#blog">博客</a><a href="#faq">FAQ</a><a href="#contact">联系</a>
         </nav>
-        <div style={{ display: "flex", gap: 8 }}>
-          <button className="btn ghost" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            aria-label="切换主题">
+
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <button className="btn ghost" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} aria-label="切换主题">
             {theme === "dark" ? "Light" : "Dark"}
           </button>
-          <a className="btn" href="#contact">Get in Touch</a>
+          {/* mobile toggle */}
+          <button className="btn menu-btn" onClick={() => setOpen(v => !v)} aria-expanded={open} aria-controls="mobile-menu">
+            菜单
+          </button>
         </div>
       </div>
+
+      {open && (
+        <div id="mobile-menu" className="container" style={{ paddingBottom: 12 }}>
+          <div className="card" style={{ display: "grid", gap: 8 }}>
+            <a href="#home">首页</a>
+            <a href="#products">产品</a>
+            <a href="#services">服务</a>
+            <a href="#portfolio">案例</a>
+            <a href="#team">团队</a>
+            <a href="#careers">招聘</a>
+            <a href="#blog">博客</a>
+            <a href="#faq">FAQ</a>
+            <a href="#contact">联系</a>
+          </div>
+        </div>
+      )}
     </motion.header>
   );
 }
+
 
 function Logo() {
   return (
