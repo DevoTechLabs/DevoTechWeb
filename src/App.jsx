@@ -61,7 +61,7 @@ function Header() {
             onChange={(e) => i18n.changeLanguage(e.target.value)}
           >
             <option value="en">EN</option>
-            <option value="zh">中文</option>
+            <option value="zh">CN</option>
             <option value="fr">FR</option>
           </select>
 
