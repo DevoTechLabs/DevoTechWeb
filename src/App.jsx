@@ -88,21 +88,30 @@ function Hero() {
   const ref = React.useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], ["0vh", "-20vh"]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.06]);
 
   return (
     <section id="home" className="hero full-bleed" ref={ref} aria-label="Hero">
-      {/* full-bleed image */}
       <div className="hero-media">
         <motion.img
           src="https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=2400&auto=format&fit=crop"
           alt=""
-          style={{ y, scale }}
-          loading="lazy"
+          initial={false}          // avoid first-paint zoom
+          loading="eager"          // load ASAP
+          fetchpriority="high"
+          decoding="async"
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            y,
+            scale,
+          }}
         />
       </div>
 
-      {/* centered content sits on top but stays within normal container width */}
       <div className="container" style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center" }}>
         <div style={{ textAlign: "center" }}>
           <span className="badge">Empower Your Digital Future</span>
