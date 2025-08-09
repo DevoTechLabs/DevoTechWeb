@@ -3,26 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-    <!-- Safe default (used if JS is disabled) -->
     <title>DevoTech — Software, AI & Cloud</title>
     <meta name="description" content="DevoTech builds custom software, mobile apps, AI & data solutions, and cloud-native platforms.">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#0b1120" />
 
     <script>
       (function () {
         var lang = (localStorage.getItem('i18nextLng') || navigator.language || 'en').toLowerCase();
-        var map = {
-          en: { title: 'DevoTech — Software, AI & Cloud',
-                desc:  'DevoTech builds custom software, mobile apps, AI & data solutions, and cloud-native platforms.',
-                html:  'en' },
-          zh: { title: 'DevoTech — 软件、AI 与云原生',
-                desc:  'DevoTech 提供定制软件、移动应用、AI 与数据方案及云原生平台。',
-                html:  'zh-CN' },
-          fr: { title: 'DevoTech — Logiciels, IA & Cloud',
-                desc:  'DevoTech conçoit des logiciels sur mesure, des apps mobiles, des solutions IA & données et des plateformes cloud natives.',
-                html:  'fr' }
-        };
         var key = lang.startsWith('zh') ? 'zh' : (lang.startsWith('fr') ? 'fr' : 'en');
+        var map = {
+          en: { title: 'DevoTech — Software, AI & Cloud', desc: 'DevoTech builds custom software, mobile apps, AI & data solutions, and cloud-native platforms.', html: 'en' },
+          zh: { title: 'DevoTech — 软件、AI 与云原生', desc: 'DevoTech 提供定制软件、移动应用、AI 与数据方案及云原生平台。', html: 'zh-CN' },
+          fr: { title: 'DevoTech — Logiciels, IA & Cloud', desc: 'DevoTech conçoit des logiciels sur mesure, des apps mobiles, des solutions IA & données et des plateformes cloud natives.', html: 'fr' }
+        };
         document.title = map[key].title;
         document.documentElement.setAttribute('lang', map[key].html);
         var m = document.querySelector('meta[name="description"]');
