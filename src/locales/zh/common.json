@@ -1,0 +1,23 @@
+{
+  "brand": "DevoTech",
+  "lang": { "select": "语言" },
+  "nav": {
+    "home": "首页",
+    "products": "产品",
+    "services": "服务",
+    "portfolio": "案例",
+    "team": "团队",
+    "careers": "招聘",
+    "blog": "博客",
+    "faq": "FAQ",
+    "contact": "联系"
+  },
+  "hero": {
+    "badge": "Empower Your Digital Future",
+    "title1": "从想法到上线，",
+    "title2": "DevoTech 助你高效落地",
+    "desc": "定制软件 · 移动端 · AI & 数据 · 云原生 · 运维",
+    "ctaView": "查看产品",
+    "ctaContact": "联系我们"
+  }
+}

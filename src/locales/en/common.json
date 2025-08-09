@@ -1,0 +1,23 @@
+{
+  "brand": "DevoTech",
+  "lang": { "select": "Language" },
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "services": "Services",
+    "portfolio": "Cases",
+    "team": "Team",
+    "careers": "Careers",
+    "blog": "Blog",
+    "faq": "FAQ",
+    "contact": "Contact"
+  },
+  "hero": {
+    "badge": "Empower Your Digital Future",
+    "title1": "From idea to launch,",
+    "title2": "DevoTech ships fast",
+    "desc": "Custom software · Mobile · AI & Data · Cloud-native · Ops",
+    "ctaView": "View products",
+    "ctaContact": "Contact us"
+  }
+}

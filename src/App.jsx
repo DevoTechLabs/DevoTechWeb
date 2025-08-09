@@ -3,6 +3,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useMotionTemplate } from "framer-motion";
+import { useTranslation } from 'react-i18next'; // language switch
 
 function useDarkMode() {
   const [theme, setTheme] = useState(
@@ -18,55 +19,72 @@ function useDarkMode() {
 }
 
 function Header() {
+  const { t, i18n } = useTranslation();
+  const { theme, setTheme } = useDarkMode();
+  const [open, setOpen] = useState(false);
   const { scrollYProgress } = useScroll();
   const bgOpacity = useTransform(scrollYProgress, [0, 0.15, 1], [0.25, 0.6, 0.85]);
   const bg = useMotionTemplate`rgba(2,6,23, ${bgOpacity})`;
-  const { theme, setTheme } = useDarkMode();
-  const [open, setOpen] = React.useState(false);
+  const lang = i18n.language?.startsWith("zh") ? "zh" : "en";
 
   useEffect(() => {
     const onHash = () => setOpen(false);
-    window.addEventListener('hashchange', onHash);
-    return () => window.removeEventListener('hashchange', onHash);
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
   }, []);
 
   return (
     <motion.header className="header" style={{ backgroundColor: bg }}>
       <div className="container nav">
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <Logo /><span style={{ fontWeight: 800, letterSpacing: 0.3 }}>DevoTech</span>
+          <Logo />
+          <span style={{ fontWeight: 800, letterSpacing: 0.3 }}>{t("brand", { defaultValue: "DevoTech" })}</span>
         </div>
 
-        {/* desktop */}
         <nav className="nav-desktop" aria-label="Primary">
-          <a href="#home">首页</a><a href="#products">产品</a><a href="#services">服务</a>
-          <a href="#portfolio">案例</a><a href="#team">团队</a><a href="#careers">招聘</a>
-          <a href="#blog">博客</a><a href="#faq">FAQ</a><a href="#contact">联系</a>
+          <a href="#home">{t("nav.home", { defaultValue: "首页" })}</a>
+          <a href="#products">{t("nav.products", { defaultValue: "产品" })}</a>
+          <a href="#services">{t("nav.services", { defaultValue: "服务" })}</a>
+          <a href="#portfolio">{t("nav.portfolio", { defaultValue: "案例" })}</a>
+          <a href="#team">{t("nav.team", { defaultValue: "团队" })}</a>
+          <a href="#careers">{t("nav.careers", { defaultValue: "招聘" })}</a>
+          <a href="#blog">{t("nav.blog", { defaultValue: "博客" })}</a>
+          <a href="#faq">{t("nav.faq", { defaultValue: "FAQ" })}</a>
+          <a href="#contact">{t("nav.contact", { defaultValue: "联系" })}</a>
         </nav>
 
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <select
+            aria-label={t("lang.select", { defaultValue: "语言" })}
+            className="btn ghost"
+            value={lang}
+            onChange={(e) => i18n.changeLanguage(e.target.value)}
+          >
+            <option value="en">EN</option>
+            <option value="zh">中文</option>
+          </select>
           <button className="btn ghost" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} aria-label="切换主题">
             {theme === "dark" ? "Light" : "Dark"}
           </button>
-          {/* mobile toggle */}
-          <button className="btn menu-btn" onClick={() => setOpen(v => !v)} aria-expanded={open} aria-controls="mobile-menu">
+          <button className="btn menu-btn" onClick={() => setOpen((v) => !v)} aria-expanded={open} aria-controls="mobile-menu">
             菜单
           </button>
+          <a className="btn" href="#contact">Get in Touch</a>
         </div>
       </div>
 
       {open && (
         <div id="mobile-menu" className="container" style={{ paddingBottom: 12 }}>
           <div className="card" style={{ display: "grid", gap: 8 }}>
-            <a href="#home">首页</a>
-            <a href="#products">产品</a>
-            <a href="#services">服务</a>
-            <a href="#portfolio">案例</a>
-            <a href="#team">团队</a>
-            <a href="#careers">招聘</a>
-            <a href="#blog">博客</a>
-            <a href="#faq">FAQ</a>
-            <a href="#contact">联系</a>
+            <a href="#home">{t("nav.home", { defaultValue: "首页" })}</a>
+            <a href="#products">{t("nav.products", { defaultValue: "产品" })}</a>
+            <a href="#services">{t("nav.services", { defaultValue: "服务" })}</a>
+            <a href="#portfolio">{t("nav.portfolio", { defaultValue: "案例" })}</a>
+            <a href="#team">{t("nav.team", { defaultValue: "团队" })}</a>
+            <a href="#careers">{t("nav.careers", { defaultValue: "招聘" })}</a>
+            <a href="#blog">{t("nav.blog", { defaultValue: "博客" })}</a>
+            <a href="#faq">{t("nav.faq", { defaultValue: "FAQ" })}</a>
+            <a href="#contact">{t("nav.contact", { defaultValue: "联系" })}</a>
           </div>
         </div>
       )}
@@ -85,7 +103,8 @@ function Logo() {
 }
 
 function Hero() {
-  const ref = React.useRef(null);
+  const { t } = useTranslation();
+  const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], ["0vh", "-20vh"]);
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.06]);
@@ -96,8 +115,8 @@ function Hero() {
         <motion.img
           src="https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=2400&auto=format&fit=crop"
           alt=""
-          initial={false}          // avoid first-paint zoom
-          loading="eager"          // load ASAP
+          initial={false}
+          loading="eager"
           fetchpriority="high"
           decoding="async"
           style={{
@@ -107,26 +126,29 @@ function Hero() {
             height: "100%",
             objectFit: "cover",
             y,
-            scale,
+            scale
           }}
         />
       </div>
 
       <div className="container" style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center" }}>
         <div style={{ textAlign: "center" }}>
-          <span className="badge">Empower Your Digital Future</span>
-          <h1 style={{ marginTop: 14 }}>从想法到上线，<br/>DevoTech 助你高效落地</h1>
-          <p style={{ color: "var(--muted)" }}>定制软件 · 移动端 · AI & 数据 · 云原生 · 交付与运维</p>
+          <span className="badge">{t("hero.badge", { defaultValue: "Empower Your Digital Future" })}</span>
+          <h1 style={{ marginTop: 14 }}>
+            {t("hero.title1", { defaultValue: "从想法到上线，" })}<br />{t("hero.title2", { defaultValue: "DevoTech 助你高效落地" })}
+          </h1>
+          <p style={{ color: "var(--muted)" }}>
+            {t("hero.desc", { defaultValue: "定制软件 · 移动端 · AI & 数据 · 云原生 · 交付与运维" })}
+          </p>
           <div style={{ marginTop: 18, display: "flex", gap: 10, justifyContent: "center" }}>
-            <a className="btn" href="#products">查看产品</a>
-            <a className="btn ghost" href="#contact">免费咨询</a>
+            <a className="btn" href="#products">{t("hero.ctaView", { defaultValue: "查看产品" })}</a>
+            <a className="btn ghost" href="#contact">{t("hero.ctaContact", { defaultValue: "联系我们" })}</a>
           </div>
         </div>
       </div>
     </section>
   );
 }
-
 
 const FadeIn = ({ children, delay = 0 }) => (
   <motion.div
