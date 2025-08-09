@@ -25,7 +25,7 @@ function Header() {
   const { scrollYProgress } = useScroll();
   const bgOpacity = useTransform(scrollYProgress, [0, 0.15, 1], [0.25, 0.6, 0.85]);
   const bg = useMotionTemplate`rgba(2,6,23, ${bgOpacity})`;
-  const lang = i18n.language?.startsWith("zh") ? "zh" : "en";
+  const lang = (i18n.resolvedLanguage || i18n.language || 'en').split('-')[0];
 
   useEffect(() => {
     const onHash = () => setOpen(false);
@@ -55,20 +55,24 @@ function Header() {
 
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <select
-            aria-label={t("lang.select", { defaultValue: "语言" })}
+            aria-label={t('lang.select', { defaultValue: 'Language' })}
             className="btn ghost"
             value={lang}
             onChange={(e) => i18n.changeLanguage(e.target.value)}
           >
             <option value="en">EN</option>
             <option value="zh">中文</option>
+            <option value="fr">FR</option>
           </select>
+
           <button className="btn ghost" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} aria-label="切换主题">
             {theme === "dark" ? "Light" : "Dark"}
           </button>
-          <button className="btn menu-btn" onClick={() => setOpen((v) => !v)} aria-expanded={open} aria-controls="mobile-menu">
+
+          <button className="btn menu-btn" onClick={() => setOpen(v => !v)} aria-expanded={open} aria-controls="mobile-menu">
             菜单
           </button>
+
           <a className="btn" href="#contact">Get in Touch</a>
         </div>
       </div>
@@ -76,6 +80,18 @@ function Header() {
       {open && (
         <div id="mobile-menu" className="container" style={{ paddingBottom: 12 }}>
           <div className="card" style={{ display: "grid", gap: 8 }}>
+            <select
+              aria-label={t('lang.select', { defaultValue: 'Language' })}
+              className="btn ghost"
+              value={lang}
+              onChange={(e) => i18n.changeLanguage(e.target.value)}
+              style={{ marginBottom: 8, width: "100%" }}
+            >
+              <option value="en">EN</option>
+              <option value="zh">中文</option>
+              <option value="fr">FR</option>
+            </select>
+
             <a href="#home">{t("nav.home", { defaultValue: "首页" })}</a>
             <a href="#products">{t("nav.products", { defaultValue: "产品" })}</a>
             <a href="#services">{t("nav.services", { defaultValue: "服务" })}</a>

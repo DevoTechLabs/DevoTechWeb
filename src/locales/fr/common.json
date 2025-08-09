@@ -1,23 +1,27 @@
 {
+  "meta": {
+    "title": "DevoTech — Logiciels, IA & Cloud",
+    "description": "DevoTech conçoit des logiciels sur mesure, des apps mobiles, des solutions IA & données et des plateformes cloud natives."
+  },
   "brand": "DevoTech",
-  "lang": { "select": "语言法语" },
+  "lang": { "select": "Langue" },
   "nav": {
-    "home": "首页",
-    "products": "产品",
-    "services": "服务",
-    "portfolio": "案例",
-    "team": "团队",
-    "careers": "招聘",
-    "blog": "博客",
+    "home": "Accueil",
+    "products": "Produits",
+    "services": "Services",
+    "portfolio": "Études",
+    "team": "Équipe",
+    "careers": "Recrutement",
+    "blog": "Blog",
     "faq": "FAQ",
-    "contact": "联系"
+    "contact": "Contact"
   },
   "hero": {
     "badge": "Empower Your Digital Future",
-    "title1": "从想法到上线，",
-    "title2": "DevoTech 助你高效落地",
-    "desc": "定制软件 · 移动端 · AI & 数据 · 云原生 · 运维",
-    "ctaView": "查看产品",
-    "ctaContact": "联系我们"
+    "title1": "De l’idée au lancement,",
+    "title2": "DevoTech livre vite",
+    "desc": "Logiciels sur mesure · Mobile · IA & données · Cloud-native · Ops",
+    "ctaView": "Voir les produits",
+    "ctaContact": "Nous contacter"
   }
 }

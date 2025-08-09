@@ -1,4 +1,8 @@
-{
+{  
+  "meta": {
+    "title": "DevoTech — Software, AI & Cloud",
+    "description": "DevoTech builds custom software, mobile apps, AI & data solutions, and cloud-native platforms."
+  },
   "brand": "DevoTech",
   "lang": { "select": "Language" },
   "nav": {

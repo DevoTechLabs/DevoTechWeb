@@ -1,4 +1,8 @@
 {
+    "meta": {
+    "title": "DevoTech — 软件、AI 与云原生",
+    "description": "DevoTech 提供定制软件、移动应用、AI 与数据方案及云原生平台。"
+  },
   "brand": "DevoTech",
   "lang": { "select": "语言" },
   "nav": {
