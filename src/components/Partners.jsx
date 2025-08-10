@@ -1,3 +1,4 @@
+// src/components/Partners.jsx
 import React from "react";
 
 export default function Partners() {
@@ -14,7 +15,7 @@ export default function Partners() {
 
   return (
     <section id="partners" className="container" aria-label="Partners" style={{ paddingBlock: 56 }}>
-      <h3 style={{ textAlign: "center", marginBottom: 24, opacity:.9 }}>
+      <h3 style={{ textAlign: "center", marginBottom: 24, opacity: .9 }}>
         Trusted by forward-thinking teams
       </h3>
       <ul className="logo-grid" role="list" style={{ listStyle: "none", margin: 0, padding: 0 }}>

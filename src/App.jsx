@@ -566,17 +566,12 @@ export default function App() {
     <>
       <Header />
       <Hero />
+
+      {/* NEW: real logo grid */}
+      <Partners />
+
       <main>
-        <section className="section">
-          <div className="container">
-            <div className="logoRow">
-              <span className="kbd">Partner A</span>
-              <span className="kbd">Partner B</span>
-              <span className="kbd">Partner C</span>
-              <span className="kbd">Partner D</span>
-            </div>
-          </div>
-        </section>
+        {/* REMOVE the old pills block that was here */}
         <Products />
         <Services />
         <Portfolio />
@@ -587,6 +582,7 @@ export default function App() {
         <FAQ />
         <Contact />
       </main>
+
       <Footer />
     </>
   );
