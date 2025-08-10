@@ -166,21 +166,27 @@ p,small{line-height:1.6}
   margin-top: 6px;
 }
 
+/* center the whole group and keep even gaps */
 .logo-grid{
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;   /* <-- centers the cluster */
   align-items: center;
-  justify-items: center;
+  gap: 24px 56px;            /* row/column gaps */
+  margin-inline: auto;
+  max-width: 1100px;         /* keeps it from spanning too wide */
 }
 
+.logo-item{ flex: 0 0 auto; } /* prevent stretching */
 .logo-item img{
-  height: 32px;                         /* uniform size */
+  height: 32px;
   filter: grayscale(1) contrast(1.05) opacity(.9);
   transition: filter .18s ease, transform .18s ease;
 }
-.logo-item img:hover{
-  filter: none;
-  transform: translateY(-1px);
+.logo-item img:hover{ filter:none; transform: translateY(-1px); }
+
+@media (max-width: 640px){
+  .logo-grid{ gap: 18px 28px; max-width: 90vw; }
 }
+
 
