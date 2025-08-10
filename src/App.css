@@ -33,15 +33,6 @@
   }
 }
 
-.full-bleed{position:relative;width:100vw;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw}
-.hero-media{position:relative;height:clamp(420px,82svh,900px);overflow:hidden}
-.hero-media video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
-.hero-overlay{position:absolute;inset:0;
-  background:
-    radial-gradient(1000px 500px at 50% 20%, rgba(96,165,250,.18), transparent 60%),
-    linear-gradient(180deg, rgba(2,6,23,0) 0%, rgba(2,6,23,.45) 65%, rgba(2,6,23,.70) 100%);
-}
-
 .card {
   padding: 2em;
 }
