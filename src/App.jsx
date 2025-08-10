@@ -154,11 +154,11 @@ function Hero() {
   // animation variants (word-by-word / char fallback)
   const container = {
     hidden: {},
-    show: { transition: { staggerChildren: 1.06, delayChildren: 0.30 } }
+    show: { transition: { staggerChildren: 0.56, delayChildren: 0.30 } }
   };
   const tokenV = {
     hidden: { opacity: 0, y: 14, filter: "blur(8px)" },
-    show:   { opacity: 1, y: 0,  filter: "blur(0px)", transition: { duration: 0.55, ease: [0.22,1,0.36,1] } }
+    show:   { opacity: 1, y: 0,  filter: "blur(0px)", transition: { duration: 0.65, ease: [0.22,1,0.36,1] } }
   };
 
   return (
