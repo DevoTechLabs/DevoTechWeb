@@ -120,45 +120,84 @@ function Logo() {
 
 function Hero() {
   const { t } = useTranslation();
+  const videoRef = useRef(null);
+  const [usePosterOnly, setUsePosterOnly] = useState(false);
 
   const prefersReduced =
-    typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  useEffect(() => {
+    if (prefersReduced) {
+      setUsePosterOnly(true);
+      return;
+    }
+    const v = videoRef.current;
+    if (!v) return;
+
+    const onError = () => setUsePosterOnly(true);
+    const onLoaded = () => {
+      // iOS/Safari sometimes needs an explicit play() call
+      v.play().catch(() => setUsePosterOnly(true));
+    };
+
+    v.addEventListener("error", onError);
+    v.addEventListener("loadeddata", onLoaded, { once: true });
+
+    return () => {
+      v.removeEventListener("error", onError);
+      v.removeEventListener("loadeddata", onLoaded);
+    };
+  }, [prefersReduced]);
 
   return (
     <section id="home" className="hero full-bleed" aria-label="Hero">
       <div className="hero-media">
-        {prefersReduced ? (
-          <img src="/hero-poster.jpg" alt="" style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover'}} />
+        {usePosterOnly ? (
+          <img
+            src="/hero-poster.jpg"
+            alt=""
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+          />
         ) : (
           <video
+            ref={videoRef}
             autoPlay
             muted
             loop
             playsInline
             preload="auto"
             poster="/hero-poster.jpg"
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", filter: "brightness(.9)" }}
           >
+            {/* Put both if you have them; browser will pick the first it supports */}
             <source src="/hero.webm" type="video/webm" />
-            <source src="/hero.mp4"  type="video/mp4" />
+            <source src="/hero.mp4" type="video/mp4" />
           </video>
         )}
         <div className="hero-overlay" />
       </div>
 
       <div className="hero-content">
-        <div style={{ textAlign:'center' }}>
-          <span className="badge">{t('hero.badge', { defaultValue:'Empower Your Digital Future' })}</span>
-          <h1 style={{ marginTop:14 }}>
-            {t('hero.title1', { defaultValue:'Devotion · Evolution · Volition' })}<br/>
-            {t('hero.title2', { defaultValue:'DevoTech keeps you on track' })}
+        <div style={{ textAlign: "center" }}>
+          <span className="badge">
+            {t("hero.badge", { defaultValue: "Empower Your Digital Future" })}
+          </span>
+          <h1 style={{ marginTop: 14 }}>
+            {t("hero.title1", { defaultValue: "Devotion · Evolution · Volition" })}
+            <br />
+            {t("hero.title2", { defaultValue: "DevoTech keeps you on track" })}
           </h1>
-          <p style={{ color:'var(--muted)' }}>
-            {t('hero.desc', { defaultValue:'Custom software · Mobile · AI & Data · Cloud-native · Ops' })}
+          <p style={{ color: "var(--muted)" }}>
+            {t("hero.desc", { defaultValue: "Custom software · Mobile · AI & Data · Cloud-native · Ops" })}
           </p>
-          <div style={{ marginTop:18, display:'flex', gap:10, justifyContent:'center' }}>
-            <a className="btn" href="#products">{t('hero.ctaView', { defaultValue:'View products' })}</a>
-            <a className="btn ghost" href="#contact">{t('hero.ctaContact', { defaultValue:'Contact us' })}</a>
+          <div style={{ marginTop: 18, display: "flex", gap: 10, justifyContent: "center" }}>
+            <a className="btn" href="#products">
+              {t("hero.ctaView", { defaultValue: "View products" })}
+            </a>
+            <a className="btn ghost" href="#contact">
+              {t("hero.ctaContact", { defaultValue: "Contact us" })}
+            </a>
           </div>
         </div>
       </div>
