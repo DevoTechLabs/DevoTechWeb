@@ -124,7 +124,7 @@ function Hero() {
   const HERO_H = "clamp(420px, 82vh, 900px)";
   const lang = (i18n.resolvedLanguage || "en").split("-")[0];
 
-  // allow wrapping on phones
+  // wrap Title 1 on phones
   const [isNarrow, setIsNarrow] = useState(false);
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 560px)");
@@ -134,121 +134,121 @@ function Hero() {
     return () => mq.removeEventListener?.("change", onChange) || mq.removeListener(onChange);
   }, []);
 
-  // tokenizers
+  // tokenization helpers
   const hasCJK = (s) =>
     /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/u.test(s);
   const normalizeSeps = (s) => s.replace(/[·•—–-]/g, m => ` ${m} `);
   const tokenize = (s) => {
-    if (hasCJK(s)) return Array.from(s.replace(/\s+/g, ""));   // char-by-char for CJK
-    const norm = normalizeSeps(s).replace(/\s+/g, " ").trim(); // word-by-word otherwise
+    if (hasCJK(s)) return Array.from(s.replace(/\s+/g, ""));              // char-by-char for CJK
+    const norm = normalizeSeps(s).replace(/\s+/g, " ").trim();            // word-by-word otherwise
     return norm ? norm.split(" ") : [];
   };
 
-  // text
-  const raw1 = t("hero.title1", { defaultValue: "Devotion · Evolution · Volition" });
-  const raw2 = t("hero.title2", { defaultValue: "DevoTech keeps you on track" });
-  const rawDesc = t("hero.desc", { defaultValue: "Custom software · Mobile · AI & Data · Cloud-native · Ops" });
+  // copy
+  const raw1    = t("hero.title1", { defaultValue: "Devotion · Evolution · Volition" });
+  const raw2    = t("hero.title2", { defaultValue: "DevoTech keeps you on track" });
+  const rawDesc = t("hero.desc",   { defaultValue: "Custom software · Mobile · AI & Data · Cloud-native · Ops" });
 
   // tokens
-  const t1 = tokenize(raw1);
-  const t2 = tokenize(raw2);
+  const t1    = tokenize(raw1);
+  const t2    = tokenize(raw2);
   const tDesc = tokenize(rawDesc);
 
-  // sequence gates
-  const [t1Done, setT1Done] = useState(false);
-  const [t2Done, setT2Done] = useState(false);
+  // sequencing gates
+  const [t1Done,   setT1Done]   = useState(false);
+  const [t2Done,   setT2Done]   = useState(false);
   const [descDone, setDescDone] = useState(false);
   useEffect(() => { setT1Done(false); setT2Done(false); setDescDone(false); }, [lang, raw1, raw2, rawDesc]);
 
-  // motion variants (you can tweak for speed)
-  const container = {
-    hidden: {},
-    show: { transition: { staggerChildren: 0.26, delayChildren: 0.12 } }
-  };
-  const tokenV = {
-    hidden: { opacity: 0, y: 14, filter: "blur(8px)" },
-    show:   { opacity: 1, y: 0,  filter: "blur(0px)", transition: { duration: 0.55, ease: [0.22,1,0.36,1] } }
-  };
+  // timing: slow for Title 1, fast for Title 2 + subtitle
+  const containerSlow = { hidden: {}, show: { transition: { staggerChildren: 0.12, delayChildren: 0.20 } } };
+  const tokenSlow     = { hidden: { opacity:0, y:16, filter:"blur(10px)" }, show:{ opacity:1, y:0, filter:"blur(0px)", transition:{ duration:0.70, ease:[0.22,1,0.36,1] } } };
+
+  const containerFast = { hidden: {}, show: { transition: { staggerChildren: 0.06, delayChildren: 0.12 } } };
+  const tokenFast     = { hidden: { opacity:0, y:14, filter:"blur(8px)"  }, show:{ opacity:1, y:0, filter:"blur(0px)",  transition:{ duration:0.55, ease:[0.22,1,0.36,1] } } };
 
   return (
     <section
       id="home"
       aria-label="Hero"
-      style={{ position: "relative", left: "50%", right: "50%", marginLeft: "-50vw", marginRight: "-50vw", width: "100vw", minHeight: HERO_H }}
+      style={{ position:"relative", left:"50%", right:"50%", marginLeft:"-50vw", marginRight:"-50vw", width:"100vw", minHeight:HERO_H }}
     >
-      {/* background */}
-      <div style={{ position: "absolute", inset: 0, overflow: "hidden", zIndex: 0 }}>
-        <video autoPlay muted loop playsInline preload="auto" poster="/hero.jpg"
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", filter: "brightness(.9)" }}>
+      {/* background media */}
+      <div style={{ position:"absolute", inset:0, overflow:"hidden", zIndex:0 }}>
+        <video
+          autoPlay muted loop playsInline preload="auto" poster="/hero.jpg"
+          style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", filter:"brightness(.9)" }}
+        >
           <source src="/hero.webm" type="video/webm" />
           <source src="/hero.mp4"  type="video/mp4" />
         </video>
-        <div style={{
-          position: "absolute", inset: 0, zIndex: 1,
-          background:
-            "radial-gradient(1000px 500px at 50% 20%, rgba(96,165,250,.18), transparent 60%)," +
-            "linear-gradient(180deg, rgba(2,6,23,0) 0%, rgba(2,6,23,.45) 65%, rgba(2,6,23,.70) 100%)"
-        }} />
+        <div
+          style={{
+            position:"absolute", inset:0, zIndex:1,
+            background:
+              "radial-gradient(1000px 500px at 50% 20%, rgba(96,165,250,.18), transparent 60%)," +
+              "linear-gradient(180deg, rgba(2,6,23,0) 0%, rgba(2,6,23,.45) 65%, rgba(2,6,23,.70) 100%)"
+          }}
+        />
       </div>
 
       {/* content */}
-      <div style={{ position: "relative", zIndex: 2, display: "grid", placeItems: "center", minHeight: HERO_H, paddingInline: 16 }}>
-        <div style={{ maxWidth: 1100, marginInline: "auto", width: "100%", textAlign: "center" }}>
-
+      <div style={{ position:"relative", zIndex:2, display:"grid", placeItems:"center", minHeight:HERO_H, paddingInline:16 }}>
+        <div style={{ maxWidth:1100, marginInline:"auto", width:"100%", textAlign:"center" }}>
           {/* badge */}
           <motion.span
-            initial={{ opacity: 0, y: 8, filter: "blur(6px)" }}
-            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            viewport={{ once: true, rootMargin: "-12% 0px -12% 0px" }}
-            transition={{ duration: 0.55, ease: [0.22,1,0.36,1] }}
+            initial={{ opacity:0, y:8, filter:"blur(6px)" }}
+            whileInView={{ opacity:1, y:0, filter:"blur(0px)" }}
+            viewport={{ once:true, rootMargin:"-12% 0px -12% 0px" }}
+            transition={{ duration:0.55, ease:[0.22,1,0.36,1] }}
             className="badge"
-            style={{ display: "inline-block", padding: "8px 14px", borderRadius: 999, background: "rgba(255,255,255,.06)", border: "1px solid rgba(255,255,255,.08)", fontSize: 14 }}
+            style={{ display:"inline-block", padding:"8px 14px", borderRadius:999, background:"rgba(255,255,255,.06)", border:"1px solid rgba(255,255,255,.08)", fontSize:14 }}
           >
-            {t("hero.badge", { defaultValue: "Empower Your Digital Future" })}
+            {t("hero.badge", { defaultValue:"Empower Your Digital Future" })}
           </motion.span>
 
           {/* titles */}
           <motion.h1
             key={lang}
-            style={{ marginTop: 14, lineHeight: 1.1 }}
-            initial="hidden" whileInView="show"
-            viewport={{ once: true, rootMargin: "-12% 0px -12% 0px" }}
-            variants={container}
+            style={{ marginTop:14, lineHeight:1.1 }}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once:true, rootMargin:"-12% 0px -12% 0px" }}
           >
-            {/* Title 1 */}
-            <div
+            {/* Title 1 — slow */}
+            <motion.span
               className="hero-title1"
-              style={{ display: "inline-flex", flexWrap: isNarrow ? "wrap" : "nowrap", gap: "0.38ch", justifyContent: "center" }}
+              variants={containerSlow}
+              style={{ display:"inline-flex", flexWrap:isNarrow ? "wrap" : "nowrap", gap:"0.38ch", justifyContent:"center" }}
             >
               {t1.map((tok, i) => (
                 <motion.span
                   key={`t1-${i}-${tok}`}
                   className="hero-word"
-                  variants={tokenV}
-                  style={{ display: "inline-block" }}
+                  variants={tokenSlow}
+                  style={{ display:"inline-block" }}
                   onAnimationComplete={i === t1.length - 1 ? () => setT1Done(true) : undefined}
                 >
                   {tok}
                 </motion.span>
               ))}
-            </div>
+            </motion.span>
 
-            {/* Title 2 (waits for Title1) */}
-            <div style={{ display: "flex", justifyContent: "center" }}>
+            {/* Title 2 — fast, starts only after Title 1 */}
+            <div style={{ display:"flex", justifyContent:"center" }}>
               <motion.span
                 key={lang + "-t2"}
                 className="hero-title2"
-                style={{ marginTop: 6, display: "inline-flex", gap: "0.3ch", flexWrap: "wrap", justifyContent: "center" }}
+                variants={containerFast}
                 initial="hidden"
                 animate={t1Done ? "show" : "hidden"}
-                variants={container}
+                style={{ marginTop:6, display:"inline-flex", gap:"0.3ch", flexWrap:"wrap", justifyContent:"center" }}
               >
                 {t2.map((tok, i) => (
                   <motion.span
                     key={`t2-${i}-${tok}`}
                     className="hero-word"
-                    variants={tokenV}
-                    style={{ display: "inline-block" }}
+                    variants={tokenFast}
                     onAnimationComplete={i === t2.length - 1 ? () => setT2Done(true) : undefined}
                   >
                     {tok}
@@ -258,20 +258,20 @@ function Hero() {
             </div>
           </motion.h1>
 
-          {/* Subtitle tokens (waits for Title2) */}
+          {/* Subtitle — fast, starts only after Title 2 */}
           <motion.p
             className="hero-desc"
-            style={{ color: "var(--muted)", marginTop: 8, maxWidth: 880, marginInline: "auto" }}
+            variants={containerFast}
             initial="hidden"
             animate={t2Done ? "show" : "hidden"}
-            variants={container}
+            style={{ color:"var(--muted)", marginTop:8, maxWidth:880, marginInline:"auto" }}
           >
-            <span style={{ display: "inline-flex", gap: "0.35ch", flexWrap: "wrap", justifyContent: "center" }}>
+            <span style={{ display:"inline-flex", gap:"0.35ch", flexWrap:"wrap", justifyContent:"center" }}>
               {tDesc.map((tok, i) => (
                 <motion.span
                   key={`td-${i}-${tok}`}
                   className="hero-word"
-                  variants={tokenV}
+                  variants={tokenFast}
                   onAnimationComplete={i === tDesc.length - 1 ? () => setDescDone(true) : undefined}
                 >
                   {tok}
@@ -280,23 +280,21 @@ function Hero() {
             </span>
           </motion.p>
 
-          {/* CTAs (wait after subtitle finishes) */}
+          {/* CTAs — appear only after subtitle finishes */}
           <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={descDone ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
-            transition={{ duration: 0.45, ease: [0.22,1,0.36,1] }}
-            style={{ marginTop: 18, display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}
+            initial={{ opacity:0, y:8 }}
+            animate={descDone ? { opacity:1, y:0 } : { opacity:0, y:8 }}
+            transition={{ duration:0.45, ease:[0.22,1,0.36,1] }}
+            style={{ marginTop:18, display:"flex", gap:10, justifyContent:"center", flexWrap:"wrap" }}
           >
-            <a className="btn" href="#products">{t("hero.ctaView", { defaultValue: "View products" })}</a>
-            <a className="btn ghost" href="#contact">{t("hero.ctaContact", { defaultValue: "Contact us" })}</a>
+            <a className="btn" href="#products">{t("hero.ctaView", { defaultValue:"View products" })}</a>
+            <a className="btn ghost" href="#contact">{t("hero.ctaContact", { defaultValue:"Contact us" })}</a>
           </motion.div>
         </div>
       </div>
     </section>
   );
 }
-
-
 
 const FadeIn = ({ children, delay = 0 }) => (
   <motion.div
