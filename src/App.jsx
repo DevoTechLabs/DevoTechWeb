@@ -123,7 +123,7 @@ function Hero() {
   const { t, i18n } = useTranslation();
   const HERO_H = "clamp(420px, 82vh, 900px)";
 
-  // phone wrap logic (same as before)
+  // phone wrap logic (same)
   const [isNarrow, setIsNarrow] = useState(false);
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 560px)");
@@ -134,28 +134,24 @@ function Hero() {
   }, []);
 
   const lang = (i18n.resolvedLanguage || "en").split("-")[0];
+
+  // text
   const rawTitle1 = t("hero.title1", { defaultValue: "Devotion · Evolution · Volition" });
   const title1Text = lang === "en" && !isNarrow ? rawTitle1.replace(/\s/g, "\u00A0") : rawTitle1;
 
-  // --- Linear-style staggered word reveal ---
-  const words = rawTitle1.trim().split(/\s+/);                 // for animation only
-  const useWordStagger = /[a-zA-Z]/.test(rawTitle1);           // avoid per-word on CJK
-
+  // animation variants (slower + smoother)
   const container = {
     hidden: {},
-    show: {
-      transition: { staggerChildren: 0.06, delayChildren: 0.08 }
-    }
+    show: { transition: { staggerChildren: 0.09, delayChildren: 0.16 } }
   };
   const word = {
-    hidden: { opacity: 0, y: 14, filter: "blur(8px)" },
-    show: {
-      opacity: 1,
-      y: 0,
-      filter: "blur(0px)",
-      transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
-    }
+    hidden: { opacity: 0, y: 16, filter: "blur(10px)" },
+    show:   { opacity: 1, y: 0,  filter: "blur(0px)", transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } }
   };
+
+  // Latin = per-word; CJK = single span
+  const isLatin = /[a-zA-Z]/.test(rawTitle1);
+  const words = rawTitle1.trim().split(/\s+/);
 
   return (
     <section
@@ -167,7 +163,7 @@ function Hero() {
         width: "100vw", minHeight: HERO_H
       }}
     >
-      {/* media bg */}
+      {/* bg media */}
       <div style={{ position: "absolute", inset: 0, overflow: "hidden", zIndex: 0 }}>
         <video
           autoPlay muted loop playsInline preload="auto" poster="/hero.jpg"
@@ -187,19 +183,14 @@ function Hero() {
       </div>
 
       {/* content */}
-      <div
-        style={{
-          position: "relative", zIndex: 2, display: "grid", placeItems: "center",
-          minHeight: HERO_H, paddingInline: 16
-        }}
-      >
+      <div style={{ position: "relative", zIndex: 2, display: "grid", placeItems: "center", minHeight: HERO_H, paddingInline: 16 }}>
         <div style={{ maxWidth: 1100, marginInline: "auto", width: "100%", textAlign: "center" }}>
-          {/* badge fade */}
+          {/* badge */}
           <motion.span
-            initial={{ opacity: 0, y: 8, filter: "blur(6px)" }}
+            initial={{ opacity: 0, y: 10, filter: "blur(8px)" }}
             whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
-            transition={{ duration: 0.5, ease: [0.22,1,0.36,1] }}
+            viewport={{ once: true, margin: "-12% 0px -12% 0px" }}
+            transition={{ duration: 0.65, ease: [0.22,1,0.36,1] }}
             className="badge"
             style={{
               display: "inline-block", padding: "8px 14px", borderRadius: 999,
@@ -209,36 +200,41 @@ function Hero() {
             {t("hero.badge", { defaultValue: "Empower Your Digital Future" })}
           </motion.span>
 
-          {/* titles */}
+          {/* titles (key on lang to replay on switch) */}{/* <- replay when language changes */}
           <motion.h1
+            key={lang}                              
             style={{ marginTop: 14, lineHeight: 1.1 }}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
+            initial="hidden" whileInView="show"
+            viewport={{ once: true, margin: "-12% 0px -12% 0px" }}
             variants={container}
           >
-            {/* title1: per-word stagger on Latin, one-shot on CJK */}
-            <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap" }}>
-              {useWordStagger ? (
-                words.map((w, idx) => (
-                  <motion.span
-                    className="hero-title1 hero-word"
-                    key={idx}
-                    variants={word}
-                    style={{ display: "inline-block", marginRight: idx === words.length - 1 ? 0 : "0.38ch" }}
-                  >
+            {/* title1: same typography, animated words inside an inline-flex row */}
+            <div
+              className="hero-title1"
+              style={{
+                display: "inline-flex",
+                flexWrap: isNarrow ? "wrap" : "nowrap",
+                gap: "0.38ch",
+                justifyContent: "center"
+              }}
+            >
+              {isLatin ? (
+                words.map((w, i) => (
+                  <motion.span key={i} variants={word} className="hero-word" style={{ display: "inline-block" }}>
                     {lang === "en" && !isNarrow ? w.replace(/\s/g, "\u00A0") : w}
                   </motion.span>
                 ))
               ) : (
-                <motion.span className="hero-title1" variants={word}>{title1Text}</motion.span>
+                <motion.span variants={word} className="hero-word">{title1Text}</motion.span>
               )}
             </div>
 
-            {/* title2: gentle delay */}
+            {/* title2 */}
             <motion.div
-              variants={{ hidden: { opacity: 0, y: 10, filter: "blur(6px)" },
-                          show:   { opacity: 1, y: 0,  filter: "blur(0px)", transition: { duration: 0.55, delay: 0.15, ease: [0.22,1,0.36,1] } } }}
+              variants={{
+                hidden: { opacity: 0, y: 12, filter: "blur(8px)" },
+                show:   { opacity: 1, y: 0,  filter: "blur(0px)", transition: { duration: 0.7, delay: 0.22, ease: [0.22,1,0.36,1] } }
+              }}
               style={{ display: "flex", justifyContent: "center" }}
             >
               <span className="hero-title2" style={{ marginTop: 6 }}>
@@ -247,22 +243,22 @@ function Hero() {
             </motion.div>
           </motion.h1>
 
-          {/* sub / ctas */}
+          {/* sub + CTAs */}
           <motion.p
-            initial={{ opacity: 0, y: 8, filter: "blur(6px)" }}
+            initial={{ opacity: 0, y: 10, filter: "blur(8px)" }}
             whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
-            transition={{ duration: 0.5, delay: 0.1, ease: [0.22,1,0.36,1] }}
+            viewport={{ once: true, margin: "-12% 0px -12% 0px" }}
+            transition={{ duration: 0.65, delay: 0.18, ease: [0.22,1,0.36,1] }}
             style={{ color: "var(--muted)", marginTop: 8, maxWidth: 880, marginInline: "auto" }}
           >
             {t("hero.desc", { defaultValue: "Custom software · Mobile · AI & Data · Cloud-native · Ops" })}
           </motion.p>
 
           <motion.div
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
-            transition={{ duration: 0.5, delay: 0.18, ease: [0.22,1,0.36,1] }}
+            viewport={{ once: true, margin: "-12% 0px -12% 0px" }}
+            transition={{ duration: 0.7, delay: 0.26, ease: [0.22,1,0.36,1] }}
             style={{ marginTop: 18, display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}
           >
             <a className="btn" href="#products">{t("hero.ctaView", { defaultValue: "View products" })}</a>
@@ -273,6 +269,8 @@ function Hero() {
     </section>
   );
 }
+
+
 
 const FadeIn = ({ children, delay = 0 }) => (
   <motion.div
