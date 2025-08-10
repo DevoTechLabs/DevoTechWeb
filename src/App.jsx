@@ -118,7 +118,7 @@ function Logo() {
   );
 }
 
-export default function Hero() {
+function Hero() {
   const { t } = useTranslation();
   // Single source of truth for hero height
   const HERO_H = "clamp(420px, 82vh, 900px)";
