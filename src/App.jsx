@@ -154,7 +154,7 @@ function Hero() {
   // animation variants (word-by-word / char fallback)
   const container = {
     hidden: {},
-    show: { transition: { staggerChildren: 0.06, delayChildren: 0.12 } }
+    show: { transition: { staggerChildren: 0.06, delayChildren: 0.30 } }
   };
   const tokenV = {
     hidden: { opacity: 0, y: 14, filter: "blur(8px)" },
