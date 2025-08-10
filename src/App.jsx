@@ -123,7 +123,7 @@ function Hero() {
   const { t, i18n } = useTranslation();
   const HERO_H = "clamp(420px, 82vh, 900px)";
 
-  // allow title1 to wrap on narrow screens
+  // phone wrap logic (same as before)
   const [isNarrow, setIsNarrow] = useState(false);
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 560px)");
@@ -135,8 +135,27 @@ function Hero() {
 
   const lang = (i18n.resolvedLanguage || "en").split("-")[0];
   const rawTitle1 = t("hero.title1", { defaultValue: "Devotion · Evolution · Volition" });
-  // keep unbroken on wider screens for English; allow wrap on phones or non-Latin languages
   const title1Text = lang === "en" && !isNarrow ? rawTitle1.replace(/\s/g, "\u00A0") : rawTitle1;
+
+  // --- Linear-style staggered word reveal ---
+  const words = rawTitle1.trim().split(/\s+/);                 // for animation only
+  const useWordStagger = /[a-zA-Z]/.test(rawTitle1);           // avoid per-word on CJK
+
+  const container = {
+    hidden: {},
+    show: {
+      transition: { staggerChildren: 0.06, delayChildren: 0.08 }
+    }
+  };
+  const word = {
+    hidden: { opacity: 0, y: 14, filter: "blur(8px)" },
+    show: {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
+    }
+  };
 
   return (
     <section
@@ -148,14 +167,10 @@ function Hero() {
         width: "100vw", minHeight: HERO_H
       }}
     >
+      {/* media bg */}
       <div style={{ position: "absolute", inset: 0, overflow: "hidden", zIndex: 0 }}>
         <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          poster="/hero.jpg"
+          autoPlay muted loop playsInline preload="auto" poster="/hero.jpg"
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", filter: "brightness(.9)" }}
         >
           <source src="/hero.webm" type="video/webm" />
@@ -171,49 +186,93 @@ function Hero() {
         />
       </div>
 
+      {/* content */}
       <div
         style={{
           position: "relative", zIndex: 2, display: "grid", placeItems: "center",
           minHeight: HERO_H, paddingInline: 16
         }}
       >
-        <div style={{ maxWidth: 1100, marginInline: "auto", width: "100%" }}>
-          <div style={{ textAlign: "center" }}>
-            <span
-              style={{
-                display: "inline-block", padding: "8px 14px", borderRadius: 999,
-                background: "rgba(255,255,255,.06)", border: "1px solid rgba(255,255,255,.08)", fontSize: 14
-              }}
-            >
-              {t("hero.badge", { defaultValue: "Empower Your Digital Future" })}
-            </span>
+        <div style={{ maxWidth: 1100, marginInline: "auto", width: "100%", textAlign: "center" }}>
+          {/* badge fade */}
+          <motion.span
+            initial={{ opacity: 0, y: 8, filter: "blur(6px)" }}
+            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
+            transition={{ duration: 0.5, ease: [0.22,1,0.36,1] }}
+            className="badge"
+            style={{
+              display: "inline-block", padding: "8px 14px", borderRadius: 999,
+              background: "rgba(255,255,255,.06)", border: "1px solid rgba(255,255,255,.08)", fontSize: 14
+            }}
+          >
+            {t("hero.badge", { defaultValue: "Empower Your Digital Future" })}
+          </motion.span>
 
-            <h1 style={{ marginTop: 14, lineHeight: 1.1 }}>
-              <div style={{ display: "flex", justifyContent: "center" }}>
-                <span className="hero-title1">{title1Text}</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "center" }}>
-                <span className="hero-title2" style={{ marginTop: 6 }}>
-                  {t("hero.title2", { defaultValue: "DevoTech keeps you on track" })}
-                </span>
-              </div>
-            </h1>
-
-            <p style={{ color: "var(--muted)", marginTop: 8, maxWidth: 880, marginInline: "auto", textAlign: "center" }}>
-              {t("hero.desc", { defaultValue: "Custom software · Mobile · AI & Data · Cloud-native · Ops" })}
-            </p>
-
-            <div style={{ marginTop: 18, display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
-              <a className="btn" href="#products">{t("hero.ctaView", { defaultValue: "View products" })}</a>
-              <a className="btn ghost" href="#contact">{t("hero.ctaContact", { defaultValue: "Contact us" })}</a>
+          {/* titles */}
+          <motion.h1
+            style={{ marginTop: 14, lineHeight: 1.1 }}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
+            variants={container}
+          >
+            {/* title1: per-word stagger on Latin, one-shot on CJK */}
+            <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap" }}>
+              {useWordStagger ? (
+                words.map((w, idx) => (
+                  <motion.span
+                    className="hero-title1 hero-word"
+                    key={idx}
+                    variants={word}
+                    style={{ display: "inline-block", marginRight: idx === words.length - 1 ? 0 : "0.38ch" }}
+                  >
+                    {lang === "en" && !isNarrow ? w.replace(/\s/g, "\u00A0") : w}
+                  </motion.span>
+                ))
+              ) : (
+                <motion.span className="hero-title1" variants={word}>{title1Text}</motion.span>
+              )}
             </div>
-          </div>
+
+            {/* title2: gentle delay */}
+            <motion.div
+              variants={{ hidden: { opacity: 0, y: 10, filter: "blur(6px)" },
+                          show:   { opacity: 1, y: 0,  filter: "blur(0px)", transition: { duration: 0.55, delay: 0.15, ease: [0.22,1,0.36,1] } } }}
+              style={{ display: "flex", justifyContent: "center" }}
+            >
+              <span className="hero-title2" style={{ marginTop: 6 }}>
+                {t("hero.title2", { defaultValue: "DevoTech keeps you on track" })}
+              </span>
+            </motion.div>
+          </motion.h1>
+
+          {/* sub / ctas */}
+          <motion.p
+            initial={{ opacity: 0, y: 8, filter: "blur(6px)" }}
+            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
+            transition={{ duration: 0.5, delay: 0.1, ease: [0.22,1,0.36,1] }}
+            style={{ color: "var(--muted)", marginTop: 8, maxWidth: 880, marginInline: "auto" }}
+          >
+            {t("hero.desc", { defaultValue: "Custom software · Mobile · AI & Data · Cloud-native · Ops" })}
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
+            transition={{ duration: 0.5, delay: 0.18, ease: [0.22,1,0.36,1] }}
+            style={{ marginTop: 18, display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}
+          >
+            <a className="btn" href="#products">{t("hero.ctaView", { defaultValue: "View products" })}</a>
+            <a className="btn ghost" href="#contact">{t("hero.ctaContact", { defaultValue: "Contact us" })}</a>
+          </motion.div>
         </div>
       </div>
     </section>
   );
 }
-
 
 const FadeIn = ({ children, delay = 0 }) => (
   <motion.div
