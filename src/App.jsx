@@ -149,7 +149,7 @@ function Hero() {
   // slower, smoother per-character variants
   const container = {
     hidden: {},
-    show: { transition: { staggerChildren: 0.10, delayChildren: 0.18 } }
+    show: { transition: { staggerChildren: 0.01, delayChildren: 0.03 } }
   };
   const charV = {
     hidden: { opacity: 0, y: 16, filter: "blur(10px)" },
