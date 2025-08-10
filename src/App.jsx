@@ -121,11 +121,22 @@ function Logo() {
 
 function Hero() {
   const { t, i18n } = useTranslation();
-  const lang = (i18n.resolvedLanguage || "en").split("-")[0];
   const HERO_H = "clamp(420px, 82vh, 900px)";
 
+  // allow title1 to wrap on narrow screens
+  const [isNarrow, setIsNarrow] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 560px)");
+    const onChange = e => setIsNarrow(e.matches);
+    onChange(mq);
+    mq.addEventListener?.("change", onChange) || mq.addListener(onChange);
+    return () => mq.removeEventListener?.("change", onChange) || mq.removeListener(onChange);
+  }, []);
+
+  const lang = (i18n.resolvedLanguage || "en").split("-")[0];
   const rawTitle1 = t("hero.title1", { defaultValue: "Devotion · Evolution · Volition" });
-  const title1Text = lang === "en" ? rawTitle1.replace(/\s/g, "\u00A0") : rawTitle1;
+  // keep unbroken on wider screens for English; allow wrap on phones or non-Latin languages
+  const title1Text = lang === "en" && !isNarrow ? rawTitle1.replace(/\s/g, "\u00A0") : rawTitle1;
 
   return (
     <section
@@ -137,10 +148,14 @@ function Hero() {
         width: "100vw", minHeight: HERO_H
       }}
     >
-      {/* media */}
       <div style={{ position: "absolute", inset: 0, overflow: "hidden", zIndex: 0 }}>
         <video
-          autoPlay muted loop playsInline preload="auto" poster="/hero-poster.jpg"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster="/hero-poster.jpg"
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", filter: "brightness(.9)" }}
         >
           <source src="/hero.webm" type="video/webm" />
@@ -156,17 +171,15 @@ function Hero() {
         />
       </div>
 
-      {/* content */}
       <div
         style={{
           position: "relative", zIndex: 2, display: "grid", placeItems: "center",
           minHeight: HERO_H, paddingInline: 16
         }}
       >
-        <div className="hero-wrap" style={{ maxWidth: 1100, marginInline: "auto", width: "100%" }}>
+        <div style={{ maxWidth: 1100, marginInline: "auto", width: "100%" }}>
           <div style={{ textAlign: "center" }}>
             <span
-              className="badge"
               style={{
                 display: "inline-block", padding: "8px 14px", borderRadius: 999,
                 background: "rgba(255,255,255,.06)", border: "1px solid rgba(255,255,255,.08)", fontSize: 14
@@ -175,23 +188,18 @@ function Hero() {
               {t("hero.badge", { defaultValue: "Empower Your Digital Future" })}
             </span>
 
-            <h1 className="hero-heading" style={{ marginTop: 14, lineHeight: 1.1 }}>
-              {/* line 1 */}
-              <div className="hero-line" style={{ display: "flex", justifyContent: "center" }}>
-                <span className="hero-title1" style={{ whiteSpace: "nowrap" }}>
-                  {title1Text}
-                </span>
+            <h1 style={{ marginTop: 14, lineHeight: 1.1 }}>
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <span className="hero-title1">{title1Text}</span>
               </div>
-
-              {/* line 2 */}
-              <div className="hero-line" style={{ display: "flex", justifyContent: "center" }}>
+              <div style={{ display: "flex", justifyContent: "center" }}>
                 <span className="hero-title2" style={{ marginTop: 6 }}>
                   {t("hero.title2", { defaultValue: "DevoTech keeps you on track" })}
                 </span>
               </div>
             </h1>
 
-            <p className="hero-sub" style={{ color: "var(--muted)", marginTop: 8, maxWidth: 880, marginInline: "auto", textAlign: "center" }}>
+            <p style={{ color: "var(--muted)", marginTop: 8, maxWidth: 880, marginInline: "auto", textAlign: "center" }}>
               {t("hero.desc", { defaultValue: "Custom software · Mobile · AI & Data · Cloud-native · Ops" })}
             </p>
 
@@ -205,6 +213,7 @@ function Hero() {
     </section>
   );
 }
+
 
 const FadeIn = ({ children, delay = 0 }) => (
   <motion.div

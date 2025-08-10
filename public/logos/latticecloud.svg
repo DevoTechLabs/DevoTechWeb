@@ -1,0 +1,24 @@
+<svg viewBox="0 0 320 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="LatticeCloud">
+  <defs>
+    <linearGradient id="lc-stroke" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#cbd5e1"/><stop offset="1" stop-color="#9aa8b6"/>
+    </linearGradient>
+    <linearGradient id="lc-link" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#93c5fd"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(8,12)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- cloud -->
+    <path d="M12 28a9 9 0 0 1 9-9 12 12 0 0 1 23-2 9 9 0 1 1 2 18H18a6 6 0 0 1-6-7z"
+          stroke="url(#lc-stroke)" stroke-width="2.6"/>
+    <!-- lattice network -->
+    <g stroke="url(#lc-link)">
+      <path d="M18 29l12-12 12 12 12-12" stroke-width="2"/>
+      <path d="M18 29l12 12 12-12 12 12" stroke-width="2" opacity=".8"/>
+      <circle cx="18" cy="29" r="2" fill="#cbd5e1"/><circle cx="30" cy="17" r="2" fill="#cbd5e1"/>
+      <circle cx="42" cy="29" r="2" fill="#cbd5e1"/><circle cx="54" cy="17" r="2" fill="#cbd5e1"/>
+      <circle cx="30" cy="41" r="2" fill="#cbd5e1"/><circle cx="54" cy="41" r="2" fill="#cbd5e1"/>
+    </g>
+  </g>
+  <text x="76" y="41" fill="#d1d5db" font-size="26" font-family="Inter,Segoe UI,Roboto,system-ui,-apple-system,sans-serif" font-weight="700">LatticeCloud</text>
+</svg>

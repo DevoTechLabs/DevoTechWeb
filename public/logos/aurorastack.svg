@@ -1,0 +1,19 @@
+<svg viewBox="0 0 320 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AuroraStack">
+  <defs>
+    <linearGradient id="as-a" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#dbeafe"/><stop offset="1" stop-color="#93c5fd"/>
+    </linearGradient>
+    <linearGradient id="as-b" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#cbd5e1"/><stop offset="1" stop-color="#9aa8b6"/>
+    </linearGradient>
+    <clipPath id="as-clip"><rect x="8" y="10" width="56" height="40" rx="8"/></clipPath>
+  </defs>
+  <g clip-path="url(#as-clip)">
+    <rect x="8" y="12" width="56" height="8" rx="4" fill="url(#as-b)"/>
+    <rect x="12" y="24" width="56" height="8" rx="4" fill="url(#as-b)" opacity=".9"/>
+    <rect x="16" y="36" width="56" height="8" rx="4" fill="url(#as-b)" opacity=".8"/>
+    <!-- aurora wave overlay -->
+    <path d="M0,44 C18,20 42,54 64,26 S98,8 120,40 L120,64 L0,64 Z" fill="url(#as-a)" opacity=".55" transform="translate(-8,-6)"/>
+  </g>
+  <text x="76" y="41" fill="#d1d5db" font-size="26" font-family="Inter, Segoe UI, Roboto, system-ui, -apple-system, sans-serif" font-weight="700">AuroraStack</text>
+</svg>

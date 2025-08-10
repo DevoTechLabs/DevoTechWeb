@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 64" role="img" aria-label="Driftline">
+  <defs>
+    <linearGradient id="dl-wave" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#93c5fd"/><stop offset="1" stop-color="#cbd5e1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- emblem (wide waves) -->
+  <g transform="translate(16,12)" fill="none" stroke-linecap="round">
+    <path d="M0 28c12-8 24 8 36 0s24 8 36 0 24 8 36 0" stroke="url(#dl-wave)" stroke-width="3"/>
+    <path d="M6 20c12-6 24 6 36 0s24 6 36 0" stroke="#a7b6c6" stroke-opacity=".6" stroke-width="2"/>
+    <path d="M10 12c12-6 24 6 36 0s24 6 36 0" stroke="#8fa0af" stroke-opacity=".35" stroke-width="2"/>
+    <path d="M70 2l8 14-14 8" stroke="#d1d5db" stroke-width="2.2" stroke-linejoin="round"/>
+  </g>
+
+  <!-- wordmark (closer) -->
+  <text x="108" y="41" fill="#d1d5db"
+        font-size="24" font-weight="700"
+        font-family="Inter, Segoe UI, Roboto, system-ui, -apple-system, sans-serif"
+        letter-spacing=".25">Driftline</text>
+</svg>
