@@ -118,86 +118,102 @@ function Logo() {
   );
 }
 
-function Hero() {
+export default function Hero() {
   const { t } = useTranslation();
-  const videoRef = useRef(null);
-  const [usePosterOnly, setUsePosterOnly] = useState(false);
-
-  const prefersReduced =
-    typeof window !== "undefined" &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  useEffect(() => {
-    if (prefersReduced) {
-      setUsePosterOnly(true);
-      return;
-    }
-    const v = videoRef.current;
-    if (!v) return;
-
-    const onError = () => setUsePosterOnly(true);
-    const onLoaded = () => {
-      // iOS/Safari sometimes needs an explicit play() call
-      v.play().catch(() => setUsePosterOnly(true));
-    };
-
-    v.addEventListener("error", onError);
-    v.addEventListener("loadeddata", onLoaded, { once: true });
-
-    return () => {
-      v.removeEventListener("error", onError);
-      v.removeEventListener("loadeddata", onLoaded);
-    };
-  }, [prefersReduced]);
+  // Single source of truth for hero height
+  const HERO_H = "clamp(420px, 82vh, 900px)";
 
   return (
-    <section id="home" className="hero full-bleed" aria-label="Hero">
-      <div className="hero-media">
-        {usePosterOnly ? (
-          <img
-            src="/hero-poster.jpg"
-            alt=""
-            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
-          />
-        ) : (
-          <video
-            ref={videoRef}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
-            poster="/hero-poster.jpg"
-            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", filter: "brightness(.9)" }}
-          >
-            {/* Put both if you have them; browser will pick the first it supports */}
-            <source src="/hero.webm" type="video/webm" />
-            <source src="/hero.mp4" type="video/mp4" />
-          </video>
-        )}
-        <div className="hero-overlay" />
+    <section id="home" aria-label="Hero"
+      style={{
+        position: "relative",
+        width: "100%",
+        minHeight: HERO_H,
+        // full-bleed without relying on classes
+        left: "50%", right: "50%", marginLeft: "-50vw", marginRight: "-50vw", width: "100vw"
+      }}
+    >
+      {/* Media layer */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          overflow: "hidden",
+          zIndex: 0
+        }}
+      >
+        {/* Always render video while debugging */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster="/hero-poster.jpg"
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            filter: "brightness(.9)"
+          }}
+        >
+          {/* Browser will pick the first it supports */}
+          <source src="/hero.webm" type="video/webm" />
+          <source src="/hero.mp4"  type="video/mp4" />
+        </video>
+
+        {/* Readability overlay */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "radial-gradient(1000px 500px at 50% 20%, rgba(96,165,250,.18), transparent 60%)," +
+              "linear-gradient(180deg, rgba(2,6,23,0) 0%, rgba(2,6,23,.45) 65%, rgba(2,6,23,.70) 100%)",
+            zIndex: 1
+          }}
+        />
       </div>
 
-      <div className="hero-content">
-        <div style={{ textAlign: "center" }}>
-          <span className="badge">
+      {/* Content layer */}
+      <div
+        style={{
+          position: "relative",
+          zIndex: 2,
+          display: "grid",
+          placeItems: "center",
+          minHeight: HERO_H,
+          paddingInline: 16
+        }}
+      >
+        <div style={{ textAlign: "center", maxWidth: 980 }}>
+          <span
+            style={{
+              display: "inline-block",
+              padding: "8px 14px",
+              borderRadius: 999,
+              background: "rgba(255,255,255,.06)",
+              border: "1px solid rgba(255,255,255,.08)",
+              fontSize: 14
+            }}
+          >
             {t("hero.badge", { defaultValue: "Empower Your Digital Future" })}
           </span>
-          <h1 style={{ marginTop: 14 }}>
-            {t("hero.title1", { defaultValue: "Devotion · Evolution · Volition" })}
-            <br />
+
+          <h1 style={{ marginTop: 14, lineHeight: 1.1, fontSize: "clamp(28px, 6vw, 64px)" }}>
+            {t("hero.title1", { defaultValue: "Devotion · Evolution · Volition" })}<br />
             {t("hero.title2", { defaultValue: "DevoTech keeps you on track" })}
           </h1>
-          <p style={{ color: "var(--muted)" }}>
+
+          <p style={{ color: "var(--muted)", marginTop: 8 }}>
             {t("hero.desc", { defaultValue: "Custom software · Mobile · AI & Data · Cloud-native · Ops" })}
           </p>
-          <div style={{ marginTop: 18, display: "flex", gap: 10, justifyContent: "center" }}>
-            <a className="btn" href="#products">
-              {t("hero.ctaView", { defaultValue: "View products" })}
-            </a>
-            <a className="btn ghost" href="#contact">
-              {t("hero.ctaContact", { defaultValue: "Contact us" })}
-            </a>
+
+          <div style={{ marginTop: 18, display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
+            <a className="btn" href="#products">{t("hero.ctaView", { defaultValue: "View products" })}</a>
+            <a className="btn ghost" href="#contact">{t("hero.ctaContact", { defaultValue: "Contact us" })}</a>
           </div>
         </div>
       </div>
