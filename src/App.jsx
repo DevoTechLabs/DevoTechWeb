@@ -119,8 +119,12 @@ function Logo() {
 }
 
 function Hero() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const lang = (i18n.resolvedLanguage || "en").split("-")[0];
   const HERO_H = "clamp(420px, 82vh, 900px)";
+
+  const rawTitle1 = t("hero.title1", { defaultValue: "Devotion · Evolution · Volition" });
+  const title1Text = lang === "en" ? rawTitle1.replace(/\s/g, "\u00A0") : rawTitle1;
 
   return (
     <section
@@ -136,7 +140,6 @@ function Hero() {
         minHeight: HERO_H
       }}
     >
-      {/* Media layer */}
       <div style={{ position: "absolute", inset: 0, overflow: "hidden", zIndex: 0 }}>
         <video
           autoPlay
@@ -145,20 +148,11 @@ function Hero() {
           playsInline
           preload="auto"
           poster="/hero-poster.jpg"
-          style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            filter: "brightness(.9)"
-          }}
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", filter: "brightness(.9)" }}
         >
           <source src="/hero.webm" type="video/webm" />
           <source src="/hero.mp4" type="video/mp4" />
         </video>
-
-        {/* readability overlay */}
         <div
           style={{
             position: "absolute",
@@ -171,7 +165,6 @@ function Hero() {
         />
       </div>
 
-      {/* Content */}
       <div
         style={{
           position: "relative",
@@ -197,54 +190,20 @@ function Hero() {
             {t("hero.badge", { defaultValue: "Empower Your Digital Future" })}
           </span>
 
-          {/* ⬇️ Title1 / Title2 now have separate sizes */}
           <h1 style={{ marginTop: 14, lineHeight: 1.1 }}>
-            <span
-              style={{
-                display: "block",
-                fontSize: "clamp(36px, 6.6vw, 84px)", // title1 size
-                letterSpacing: "-0.01em",
-                fontWeight: 800
-              }}
-            >
-              {t("hero.title1", { defaultValue: "Devotion · Evolution · Volition" })}
-            </span>
-
-            <span
-              style={{
-                display: "block",
-                fontSize: "clamp(20px, 2.4vw, 28px)", // title2 size
-                lineHeight: 1.2,
-                marginTop: 6,
-                fontWeight: 600,
-                color: "var(--muted)"
-              }}
-            >
+            <span className="hero-title1">{title1Text}</span>
+            <span className="hero-title2">
               {t("hero.title2", { defaultValue: "DevoTech keeps you on track" })}
             </span>
           </h1>
 
-          <p
-            style={{
-              color: "var(--muted)",
-              fontSize: "clamp(14px, 2.2vw, 20px)",
-              lineHeight: 1.5,
-              maxWidth: 880,
-              margin: "8px auto 0"
-            }}
-          >
-            {t("hero.desc", {
-              defaultValue: "Custom software · Mobile · AI & Data · Cloud-native · Ops"
-            })}
+          <p className="hero-sub" style={{ color: "var(--muted)", marginTop: 8, maxWidth: 880, marginInline: "auto" }}>
+            {t("hero.desc", { defaultValue: "Custom software · Mobile · AI & Data · Cloud-native · Ops" })}
           </p>
 
           <div style={{ marginTop: 18, display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
-            <a className="btn" href="#products">
-              {t("hero.ctaView", { defaultValue: "View products" })}
-            </a>
-            <a className="btn ghost" href="#contact">
-              {t("hero.ctaContact", { defaultValue: "Contact us" })}
-            </a>
+            <a className="btn" href="#products">{t("hero.ctaView", { defaultValue: "View products" })}</a>
+            <a className="btn ghost" href="#contact">{t("hero.ctaContact", { defaultValue: "Contact us" })}</a>
           </div>
         </div>
       </div>
