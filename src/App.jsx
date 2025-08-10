@@ -155,7 +155,7 @@ function Hero() {
           loop
           playsInline
           preload="auto"
-          poster="/hero-poster.jpg"
+          poster="/hero.jpg"
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", filter: "brightness(.9)" }}
         >
           <source src="/hero.webm" type="video/webm" />
