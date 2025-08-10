@@ -148,7 +148,14 @@ function Hero() {
           playsInline
           preload="auto"
           poster="/hero-poster.jpg"
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", filter: "brightness(.9)" }}
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            filter: "brightness(.9)"
+          }}
         >
           <source src="/hero.webm" type="video/webm" />
           <source src="/hero.mp4" type="video/mp4" />
@@ -175,7 +182,7 @@ function Hero() {
           paddingInline: 16
         }}
       >
-        <div style={{ textAlign: "center", maxWidth: 980 }}>
+        <div className="hero-wrap" style={{ maxWidth: 980, marginInline: "auto", textAlign: "center" }}>
           <span
             className="badge"
             style={{
@@ -190,9 +197,9 @@ function Hero() {
             {t("hero.badge", { defaultValue: "Empower Your Digital Future" })}
           </span>
 
-          <h1 style={{ marginTop: 14, lineHeight: 1.1 }}>
-            <span className="hero-title1">{title1Text}</span>
-            <span className="hero-title2">
+          <h1 className="hero-heading" style={{ marginTop: 14, lineHeight: 1.1, textAlign: "center" }}>
+            <span className="hero-title1" style={{ display: "block" }}>{title1Text}</span>
+            <span className="hero-title2" style={{ display: "block" }}>
               {t("hero.title2", { defaultValue: "DevoTech keeps you on track" })}
             </span>
           </h1>
