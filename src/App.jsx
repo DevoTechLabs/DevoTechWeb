@@ -160,6 +160,7 @@ function Hero() {
           <source src="/hero.webm" type="video/webm" />
           <source src="/hero.mp4" type="video/mp4" />
         </video>
+
         <div
           style={{
             position: "absolute",
@@ -182,7 +183,7 @@ function Hero() {
           paddingInline: 16
         }}
       >
-        <div className="hero-wrap" style={{ maxWidth: 980, marginInline: "auto", textAlign: "center" }}>
+        <div className="hero-wrap" style={{ maxWidth: 1100, marginInline: "auto", textAlign: "center" }}>
           <span
             className="badge"
             style={{
@@ -198,8 +199,25 @@ function Hero() {
           </span>
 
           <h1 className="hero-heading" style={{ marginTop: 14, lineHeight: 1.1, textAlign: "center" }}>
-            <span className="hero-title1" style={{ display: "block" }}>{title1Text}</span>
-            <span className="hero-title2" style={{ display: "block" }}>
+            <span
+              className="hero-title1"
+              style={{
+                display: "block",
+                whiteSpace: "nowrap",
+                width: "max-content",
+                marginInline: "auto"
+              }}
+            >
+              {title1Text}
+            </span>
+
+            <span
+              className="hero-title2"
+              style={{
+                display: "block",
+                marginTop: 6
+              }}
+            >
               {t("hero.title2", { defaultValue: "DevoTech keeps you on track" })}
             </span>
           </h1>
