@@ -124,7 +124,7 @@ function Hero() {
   const HERO_H = "clamp(420px, 82vh, 900px)";
   const lang = (i18n.resolvedLanguage || "en").split("-")[0];
 
-  // phone wrap logic
+  // allow wrapping on phones
   const [isNarrow, setIsNarrow] = useState(false);
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 560px)");
@@ -135,12 +135,14 @@ function Hero() {
   }, []);
 
   // --- tokenizers ---
-  const normalizeSeps = (s) => s.replace(/[·•—–-]/g, m => ` ${m} `).replace(/\s+/g, " ").trim();
-  const isLatin = (s) => /[A-Za-z]/.test(s);
-  // Latin -> words; CJK -> characters (so it doesn’t come in as one chunk)
+  const hasCJK = (s) =>
+    /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/u.test(s);
+  const normalizeSeps = (s) => s.replace(/[·•—–-]/g, m => ` ${m} `); // keep separators as tokens
+  // Latin -> words; CJK -> chars (remove spaces so 2字 won't come as one "word")
   const tokenize = (s) => {
-    const norm = normalizeSeps(s);
-    return isLatin(norm) ? norm.split(" ") : Array.from(norm.replace(/\s+/g, ""));
+    if (hasCJK(s)) return Array.from(s.replace(/\s+/g, ""));
+    const norm = normalizeSeps(s).replace(/\s+/g, " ").trim();
+    return norm ? norm.split(" ") : [];
   };
 
   // texts
@@ -151,35 +153,50 @@ function Hero() {
   const t1 = tokenize(raw1);
   const t2 = tokenize(raw2);
 
-  // animation variants (word-by-word / char fallback)
+  // keep EN nowrap on wide screens, wrap on phones; we do this via CSS + tokens (no need to swap spaces)
+  const line1Wrap = isNarrow ? "wrap" : "nowrap";
+
+  // sequencing: Title2 waits for Title1's last token to finish
+  const [t1Done, setT1Done] = useState(false);
+  useEffect(() => { setT1Done(false); }, [lang, raw1]); // reset when language or text changes
+
+  // animation variants
   const container = {
     hidden: {},
-    show: { transition: { staggerChildren: 0.56, delayChildren: 0.30 } }
+    show: { transition: { staggerChildren: 0.06, delayChildren: 0.12 } }
   };
   const tokenV = {
     hidden: { opacity: 0, y: 14, filter: "blur(8px)" },
-    show:   { opacity: 1, y: 0,  filter: "blur(0px)", transition: { duration: 0.65, ease: [0.22,1,0.36,1] } }
+    show:   { opacity: 1, y: 0,  filter: "blur(0px)", transition: { duration: 0.55, ease: [0.22,1,0.36,1] } }
   };
 
   return (
     <section
       id="home"
       aria-label="Hero"
-      style={{ position: "relative", left: "50%", right: "50%", marginLeft: "-50vw", marginRight: "-50vw", width: "100vw", minHeight: HERO_H }}
+      style={{
+        position: "relative",
+        left: "50%", right: "50%", marginLeft: "-50vw", marginRight: "-50vw",
+        width: "100vw", minHeight: HERO_H
+      }}
     >
-      {/* background media */}
+      {/* media */}
       <div style={{ position: "absolute", inset: 0, overflow: "hidden", zIndex: 0 }}>
-        <video autoPlay muted loop playsInline preload="auto" poster="/hero.jpg"
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", filter: "brightness(.9)" }}>
+        <video
+          autoPlay muted loop playsInline preload="auto" poster="/hero.jpg"
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", filter: "brightness(.9)" }}
+        >
           <source src="/hero.webm" type="video/webm" />
           <source src="/hero.mp4"  type="video/mp4" />
         </video>
-        <div style={{
-          position: "absolute", inset: 0, zIndex: 1,
-          background:
-            "radial-gradient(1000px 500px at 50% 20%, rgba(96,165,250,.18), transparent 60%)," +
-            "linear-gradient(180deg, rgba(2,6,23,0) 0%, rgba(2,6,23,.45) 65%, rgba(2,6,23,.70) 100%)"
-        }} />
+        <div
+          style={{
+            position: "absolute", inset: 0, zIndex: 1,
+            background:
+              "radial-gradient(1000px 500px at 50% 20%, rgba(96,165,250,.18), transparent 60%)," +
+              "linear-gradient(180deg, rgba(2,6,23,0) 0%, rgba(2,6,23,.45) 65%, rgba(2,6,23,.70) 100%)"
+          }}
+        />
       </div>
 
       {/* content */}
@@ -192,28 +209,26 @@ function Hero() {
             viewport={{ once: true, rootMargin: "-12% 0px -12% 0px" }}
             transition={{ duration: 0.55, ease: [0.22,1,0.36,1] }}
             className="badge"
-            style={{ display: "inline-block", padding: "8px 14px", borderRadius: 999, background: "rgba(255,255,255,.06)", border: "1px solid rgba(255,255,255,.08)", fontSize: 14 }}
+            style={{
+              display: "inline-block", padding: "8px 14px", borderRadius: 999,
+              background: "rgba(255,255,255,.06)", border: "1px solid rgba(255,255,255,.08)", fontSize: 14
+            }}
           >
             {t("hero.badge", { defaultValue: "Empower Your Digital Future" })}
           </motion.span>
 
-          {/* titles (key on lang to replay on switch) */}
+          {/* titles */}
           <motion.h1
-            key={lang}
+            key={lang}  // replay on language switch
             style={{ marginTop: 14, lineHeight: 1.1 }}
             initial="hidden" whileInView="show"
             viewport={{ once: true, rootMargin: "-12% 0px -12% 0px" }}
             variants={container}
           >
-            {/* Title 1: words (Latin) or chars (CJK) */}
+            {/* Title 1 */}
             <div
               className="hero-title1"
-              style={{
-                display: "inline-flex",
-                flexWrap: isNarrow ? "wrap" : "nowrap",
-                gap: "0.38ch",
-                justifyContent: "center"
-              }}
+              style={{ display: "inline-flex", flexWrap: line1Wrap, gap: "0.38ch", justifyContent: "center" }}
             >
               {t1.map((tok, i) => (
                 <motion.span
@@ -221,23 +236,23 @@ function Hero() {
                   className="hero-word"
                   variants={tokenV}
                   style={{ display: "inline-block" }}
+                  // when the LAST token finishes, unlock Title 2
+                  onAnimationComplete={i === t1.length - 1 ? () => setT1Done(true) : undefined}
                 >
                   {tok}
                 </motion.span>
               ))}
             </div>
 
-            {/* Title 2: same token logic, so it won’t appear as a single chunk */}
-            <motion.div
-              variants={{ hidden: { opacity: 0, y: 10, filter: "blur(6px)" },
-                          show:   { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.55, delay: 0.18, ease: [0.22,1,0.36,1] } } }}
-              style={{ display: "flex", justifyContent: "center" }}
-            >
+            {/* Title 2 — waits for Title1 */}
+            <div style={{ display: "flex", justifyContent: "center" }}>
               <motion.span
                 key={lang + "-t2"}
                 className="hero-title2"
                 style={{ marginTop: 6, display: "inline-flex", gap: "0.3ch", flexWrap: "wrap", justifyContent: "center" }}
-                initial="hidden" animate="show" variants={container}
+                initial="hidden"
+                animate={t1Done ? "show" : "hidden"}   // <-- gated by Title 1
+                variants={container}
               >
                 {t2.map((tok, i) => (
                   <motion.span key={`t2-${i}-${tok}`} className="hero-word" variants={tokenV} style={{ display: "inline-block" }}>
@@ -245,7 +260,7 @@ function Hero() {
                   </motion.span>
                 ))}
               </motion.span>
-            </motion.div>
+            </div>
           </motion.h1>
 
           {/* sub + CTAs */}
@@ -274,6 +289,7 @@ function Hero() {
     </section>
   );
 }
+
 
 const FadeIn = ({ children, delay = 0 }) => (
   <motion.div
