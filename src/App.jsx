@@ -126,25 +126,21 @@ function Hero() {
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.06]);
 
   return (
-    <section id="home" className="hero full-bleed" ref={ref} aria-label="Hero">
+    <section id="home" className="hero full-bleed" aria-label="Hero">
       <div className="hero-media">
-        <motion.img
-          src="https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=2400&auto=format&fit=crop"
-          alt=""
-          initial={false}
-          loading="eager"
-          fetchpriority="high"
-          decoding="async"
-          style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            y,
-            scale
-          }}
-        />
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster="/hero-poster.jpg"
+          style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', filter:'brightness(.9)' }}
+        >
+          <source src="/hero-evolution.webm" type="video/webm" />
+          <source src="/hero-evolution.mp4"  type="video/mp4" />
+        </video>
+        <div className="hero-overlay"></div>
       </div>
 
       <div className="container" style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center" }}>
