@@ -200,3 +200,59 @@ p,small{line-height:1.6}
   transition: filter .18s, transform .18s;
 }
 .logo-item img:hover{ filter: none; transform: translateY(-1px); }
+
+/* ===== Themed Scrollbar (global) ===== */
+:root{
+  --scrollbar-size: 12px;              /* width/height */
+  --scrollbar-radius: 999px;
+
+  /* Dark (default) */
+  --scroll-track: rgba(148,163,184,.10);     /* track */
+  --scroll-thumb: rgba(148,163,184,.38);     /* thumb */
+  --scroll-thumb-hover: rgba(148,163,184,.55);
+  --scroll-corner: transparent;
+
+  /* If you have a brand accent, uncomment and it will be used for active state
+  --accent: #60a5fa;
+  */
+}
+
+[data-theme="light"]{
+  /* Light mode palette */
+  --scroll-track: rgba(2,6,23,.08);
+  --scroll-thumb: rgba(2,6,23,.30);
+  --scroll-thumb-hover: rgba(2,6,23,.50);
+}
+
+/* WebKit (Chrome/Edge/Safari) */
+*::-webkit-scrollbar{
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
+}
+*::-webkit-scrollbar-track{
+  background: var(--scroll-track);
+  border-radius: var(--scrollbar-radius);
+}
+*::-webkit-scrollbar-thumb{
+  background-color: var(--scroll-thumb);
+  border-radius: var(--scrollbar-radius);
+  border: 3px solid transparent;       /* creates a nice inset look */
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover{
+  background-color: var(--scroll-thumb-hover);
+}
+*::-webkit-scrollbar-corner{
+  background: var(--scroll-corner);
+}
+
+/* Firefox */
+html{
+  scrollbar-width: thin;                               /* auto | thin | none */
+  scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+/* Optional: tighter scrollbars on small screens */
+@media (max-width: 640px){
+  :root{ --scrollbar-size: 10px; }
+}
