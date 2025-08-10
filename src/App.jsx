@@ -120,47 +120,52 @@ function Logo() {
 
 function Hero() {
   const { t } = useTranslation();
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], ["0vh", "-20vh"]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.06]);
+
+  const prefersReduced =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   return (
     <section id="home" className="hero full-bleed" aria-label="Hero">
       <div className="hero-media">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          poster="/hero-poster.jpg"
-          style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', filter:'brightness(.9)' }}
-        >
-          <source src="/hero-evolution.webm" type="video/webm" />
-          <source src="/hero-evolution.mp4"  type="video/mp4" />
-        </video>
-        <div className="hero-overlay"></div>
+        {prefersReduced ? (
+          <img src="/hero-poster.jpg" alt="" style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover'}} />
+        ) : (
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            poster="/hero-poster.jpg"
+          >
+            <source src="/hero.webm" type="video/webm" />
+            <source src="/hero.mp4"  type="video/mp4" />
+          </video>
+        )}
+        <div className="hero-overlay" />
       </div>
 
-      <div className="container" style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center" }}>
-        <div style={{ textAlign: "center" }}>
-          <span className="badge">{t("hero.badge", { defaultValue: "Empower Your Digital Future" })}</span>
-          <h1 style={{ marginTop: 14 }}>
-            {t("hero.title1", { defaultValue: "从想法到上线，" })}<br />{t("hero.title2", { defaultValue: "DevoTech 助你高效落地" })}
+      <div className="hero-content">
+        <div style={{ textAlign:'center' }}>
+          <span className="badge">{t('hero.badge', { defaultValue:'Empower Your Digital Future' })}</span>
+          <h1 style={{ marginTop:14 }}>
+            {t('hero.title1', { defaultValue:'Devotion · Evolution · Volition' })}<br/>
+            {t('hero.title2', { defaultValue:'DevoTech keeps you on track' })}
           </h1>
-          <p style={{ color: "var(--muted)" }}>
-            {t("hero.desc", { defaultValue: "定制软件 · 移动端 · AI & 数据 · 云原生 · 交付与运维" })}
+          <p style={{ color:'var(--muted)' }}>
+            {t('hero.desc', { defaultValue:'Custom software · Mobile · AI & Data · Cloud-native · Ops' })}
           </p>
-          <div style={{ marginTop: 18, display: "flex", gap: 10, justifyContent: "center" }}>
-            <a className="btn" href="#products">{t("hero.ctaView", { defaultValue: "查看产品" })}</a>
-            <a className="btn ghost" href="#contact">{t("hero.ctaContact", { defaultValue: "联系我们" })}</a>
+          <div style={{ marginTop:18, display:'flex', gap:10, justifyContent:'center' }}>
+            <a className="btn" href="#products">{t('hero.ctaView', { defaultValue:'View products' })}</a>
+            <a className="btn ghost" href="#contact">{t('hero.ctaContact', { defaultValue:'Contact us' })}</a>
           </div>
         </div>
       </div>
     </section>
   );
 }
+
 
 const FadeIn = ({ children, delay = 0 }) => (
   <motion.div
