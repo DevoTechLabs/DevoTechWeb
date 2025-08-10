@@ -165,3 +165,26 @@ p,small{line-height:1.6}
   color: var(--muted);
   margin-top: 6px;
 }
+
+.logo-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:28px;
+  align-items:center;
+  justify-items:center;
+}
+
+.logo-item img{
+  height:28px;                     /* uniform height for all */
+  filter:grayscale(1) contrast(1.1) opacity(.8);
+  transition:filter .18s ease, transform .18s ease;
+}
+.logo-item img:hover{
+  filter:none;
+  transform:translateY(-1px);
+}
+
+/* larger screens = a touch more breathing room */
+@media (min-width: 1200px){
+  .logo-grid{ gap:36px; }
+}

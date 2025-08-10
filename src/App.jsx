@@ -4,6 +4,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useMotionTemplate } from "framer-motion";
 import { useTranslation } from 'react-i18next'; // language switch
+import Partners from "./components/Partners.jsx";
 
 function useDarkMode() {
   const [theme, setTheme] = useState(
@@ -219,8 +220,8 @@ const FadeIn = ({ children, delay = 0 }) => (
 function Products() {
   const items = [
     { t: "DevoTrack", d: "一站式发货与物流追踪中台", tag: "Coming soon" },
-    { t: "VisionKit", d: "轻量图像识别与质检 SDK", tag: "Beta" },
-    { t: "DataFlow", d: "事件流与可观测性框架", tag: "Stable" },
+    { t: "VisionKit", d: "轻量图像识别与质检 SDK", tag: "Developing" },
+    { t: "DataFlow", d: "事件流与可观测性框架", tag: "BetaTesting" },
   ];
   return (
     <section id="products" className="section">
@@ -385,8 +386,8 @@ function Testimonials() {
 function Careers() {
   const [open, setOpen] = useState(false);
   const jobs = [
-    { t: "前端工程师", loc: "Remote / Moncton", type: "Full-time" },
-    { t: "后端工程师", loc: "Remote / Moncton", type: "Full-time" },
+    { t: "前端工程师", loc: "Remote", type: "Full-time" },
+    { t: "后端工程师", loc: "Remote", type: "Full-time" },
     { t: "实习生 - 软件", loc: "Remote", type: "Intern" },
   ];
   return (
