@@ -120,29 +120,24 @@ function Logo() {
 
 function Hero() {
   const { t } = useTranslation();
-  // Single source of truth for hero height
   const HERO_H = "clamp(420px, 82vh, 900px)";
 
   return (
-    <section id="home" aria-label="Hero"
+    <section
+      id="home"
+      aria-label="Hero"
       style={{
         position: "relative",
-        width: "100%",
-        minHeight: HERO_H,
-        // full-bleed without relying on classes
-        left: "50%", right: "50%", marginLeft: "-50vw", marginRight: "-50vw", width: "100vw"
+        left: "50%",
+        right: "50%",
+        marginLeft: "-50vw",
+        marginRight: "-50vw",
+        width: "100vw",
+        minHeight: HERO_H
       }}
     >
       {/* Media layer */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          overflow: "hidden",
-          zIndex: 0
-        }}
-      >
-        {/* Always render video while debugging */}
+      <div style={{ position: "absolute", inset: 0, overflow: "hidden", zIndex: 0 }}>
         <video
           autoPlay
           muted
@@ -159,25 +154,24 @@ function Hero() {
             filter: "brightness(.9)"
           }}
         >
-          {/* Browser will pick the first it supports */}
           <source src="/hero.webm" type="video/webm" />
-          <source src="/hero.mp4"  type="video/mp4" />
+          <source src="/hero.mp4" type="video/mp4" />
         </video>
 
-        {/* Readability overlay */}
+        {/* readability overlay */}
         <div
           style={{
             position: "absolute",
             inset: 0,
+            zIndex: 1,
             background:
               "radial-gradient(1000px 500px at 50% 20%, rgba(96,165,250,.18), transparent 60%)," +
-              "linear-gradient(180deg, rgba(2,6,23,0) 0%, rgba(2,6,23,.45) 65%, rgba(2,6,23,.70) 100%)",
-            zIndex: 1
+              "linear-gradient(180deg, rgba(2,6,23,0) 0%, rgba(2,6,23,.45) 65%, rgba(2,6,23,.70) 100%)"
           }}
         />
       </div>
 
-      {/* Content layer */}
+      {/* Content */}
       <div
         style={{
           position: "relative",
@@ -190,6 +184,7 @@ function Hero() {
       >
         <div style={{ textAlign: "center", maxWidth: 980 }}>
           <span
+            className="badge"
             style={{
               display: "inline-block",
               padding: "8px 14px",
@@ -202,25 +197,60 @@ function Hero() {
             {t("hero.badge", { defaultValue: "Empower Your Digital Future" })}
           </span>
 
-          <h1 style={{ marginTop: 14, lineHeight: 1.1, fontSize: "clamp(28px, 6vw, 64px)" }}>
-            {t("hero.title1", { defaultValue: "Devotion · Evolution · Volition" })}<br />
-            {t("hero.title2", { defaultValue: "DevoTech keeps you on track" })}
+          {/* ⬇️ Title1 / Title2 now have separate sizes */}
+          <h1 style={{ marginTop: 14, lineHeight: 1.1 }}>
+            <span
+              style={{
+                display: "block",
+                fontSize: "clamp(36px, 6.6vw, 84px)", // title1 size
+                letterSpacing: "-0.01em",
+                fontWeight: 800
+              }}
+            >
+              {t("hero.title1", { defaultValue: "Devotion · Evolution · Volition" })}
+            </span>
+
+            <span
+              style={{
+                display: "block",
+                fontSize: "clamp(20px, 2.4vw, 28px)", // title2 size
+                lineHeight: 1.2,
+                marginTop: 6,
+                fontWeight: 600,
+                color: "var(--muted)"
+              }}
+            >
+              {t("hero.title2", { defaultValue: "DevoTech keeps you on track" })}
+            </span>
           </h1>
 
-          <p style={{ color: "var(--muted)", marginTop: 8 }}>
-            {t("hero.desc", { defaultValue: "Custom software · Mobile · AI & Data · Cloud-native · Ops" })}
+          <p
+            style={{
+              color: "var(--muted)",
+              fontSize: "clamp(14px, 2.2vw, 20px)",
+              lineHeight: 1.5,
+              maxWidth: 880,
+              margin: "8px auto 0"
+            }}
+          >
+            {t("hero.desc", {
+              defaultValue: "Custom software · Mobile · AI & Data · Cloud-native · Ops"
+            })}
           </p>
 
           <div style={{ marginTop: 18, display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
-            <a className="btn" href="#products">{t("hero.ctaView", { defaultValue: "View products" })}</a>
-            <a className="btn ghost" href="#contact">{t("hero.ctaContact", { defaultValue: "Contact us" })}</a>
+            <a className="btn" href="#products">
+              {t("hero.ctaView", { defaultValue: "View products" })}
+            </a>
+            <a className="btn ghost" href="#contact">
+              {t("hero.ctaContact", { defaultValue: "Contact us" })}
+            </a>
           </div>
         </div>
       </div>
     </section>
   );
 }
-
 
 const FadeIn = ({ children, delay = 0 }) => (
   <motion.div
