@@ -161,7 +161,7 @@ function Hero() {
   useEffect(() => { setT1Done(false); setT2Done(false); setDescDone(false); }, [lang, raw1, raw2, rawDesc]);
 
   // timing: slow for Title 1, fast for Title 2 + subtitle
-  const containerSlow = { hidden: {}, show: { transition: { staggerChildren: 0.12, delayChildren: 0.20 } } };
+  const containerSlow = { hidden: {}, show: { transition: { staggerChildren: 0.32, delayChildren: 0.20 } } };
   const tokenSlow     = { hidden: { opacity:0, y:16, filter:"blur(10px)" }, show:{ opacity:1, y:0, filter:"blur(0px)", transition:{ duration:0.70, ease:[0.22,1,0.36,1] } } };
 
   const containerFast = { hidden: {}, show: { transition: { staggerChildren: 0.06, delayChildren: 0.12 } } };
