@@ -132,40 +132,22 @@ function Hero() {
       aria-label="Hero"
       style={{
         position: "relative",
-        left: "50%",
-        right: "50%",
-        marginLeft: "-50vw",
-        marginRight: "-50vw",
-        width: "100vw",
-        minHeight: HERO_H
+        left: "50%", right: "50%", marginLeft: "-50vw", marginRight: "-50vw",
+        width: "100vw", minHeight: HERO_H
       }}
     >
+      {/* media */}
       <div style={{ position: "absolute", inset: 0, overflow: "hidden", zIndex: 0 }}>
         <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          poster="/hero-poster.jpg"
-          style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            filter: "brightness(.9)"
-          }}
+          autoPlay muted loop playsInline preload="auto" poster="/hero-poster.jpg"
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", filter: "brightness(.9)" }}
         >
           <source src="/hero.webm" type="video/webm" />
-          <source src="/hero.mp4" type="video/mp4" />
+          <source src="/hero.mp4"  type="video/mp4" />
         </video>
-
         <div
           style={{
-            position: "absolute",
-            inset: 0,
-            zIndex: 1,
+            position: "absolute", inset: 0, zIndex: 1,
             background:
               "radial-gradient(1000px 500px at 50% 20%, rgba(96,165,250,.18), transparent 60%)," +
               "linear-gradient(180deg, rgba(2,6,23,0) 0%, rgba(2,6,23,.45) 65%, rgba(2,6,23,.70) 100%)"
@@ -173,62 +155,49 @@ function Hero() {
         />
       </div>
 
+      {/* content */}
       <div
         style={{
-          position: "relative",
-          zIndex: 2,
-          display: "grid",
-          placeItems: "center",
-          minHeight: HERO_H,
-          paddingInline: 16
+          position: "relative", zIndex: 2, display: "grid", placeItems: "center",
+          minHeight: HERO_H, paddingInline: 16
         }}
       >
-        <div className="hero-wrap" style={{ maxWidth: 1100, marginInline: "auto", textAlign: "center" }}>
-          <span
-            className="badge"
-            style={{
-              display: "inline-block",
-              padding: "8px 14px",
-              borderRadius: 999,
-              background: "rgba(255,255,255,.06)",
-              border: "1px solid rgba(255,255,255,.08)",
-              fontSize: 14
-            }}
-          >
-            {t("hero.badge", { defaultValue: "Empower Your Digital Future" })}
-          </span>
-
-          <h1 className="hero-heading" style={{ marginTop: 14, lineHeight: 1.1, textAlign: "center" }}>
+        <div className="hero-wrap" style={{ maxWidth: 1100, marginInline: "auto", width: "100%" }}>
+          <div style={{ textAlign: "center" }}>
             <span
-              className="hero-title1"
+              className="badge"
               style={{
-                display: "block",
-                whiteSpace: "nowrap",
-                width: "max-content",
-                marginInline: "auto"
+                display: "inline-block", padding: "8px 14px", borderRadius: 999,
+                background: "rgba(255,255,255,.06)", border: "1px solid rgba(255,255,255,.08)", fontSize: 14
               }}
             >
-              {title1Text}
+              {t("hero.badge", { defaultValue: "Empower Your Digital Future" })}
             </span>
 
-            <span
-              className="hero-title2"
-              style={{
-                display: "block",
-                marginTop: 6
-              }}
-            >
-              {t("hero.title2", { defaultValue: "DevoTech keeps you on track" })}
-            </span>
-          </h1>
+            <h1 className="hero-heading" style={{ marginTop: 14, lineHeight: 1.1 }}>
+              {/* line 1 */}
+              <div className="hero-line" style={{ display: "flex", justifyContent: "center" }}>
+                <span className="hero-title1" style={{ whiteSpace: "nowrap" }}>
+                  {title1Text}
+                </span>
+              </div>
 
-          <p className="hero-sub" style={{ color: "var(--muted)", marginTop: 8, maxWidth: 880, marginInline: "auto" }}>
-            {t("hero.desc", { defaultValue: "Custom software · Mobile · AI & Data · Cloud-native · Ops" })}
-          </p>
+              {/* line 2 */}
+              <div className="hero-line" style={{ display: "flex", justifyContent: "center" }}>
+                <span className="hero-title2" style={{ marginTop: 6 }}>
+                  {t("hero.title2", { defaultValue: "DevoTech keeps you on track" })}
+                </span>
+              </div>
+            </h1>
 
-          <div style={{ marginTop: 18, display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
-            <a className="btn" href="#products">{t("hero.ctaView", { defaultValue: "View products" })}</a>
-            <a className="btn ghost" href="#contact">{t("hero.ctaContact", { defaultValue: "Contact us" })}</a>
+            <p className="hero-sub" style={{ color: "var(--muted)", marginTop: 8, maxWidth: 880, marginInline: "auto", textAlign: "center" }}>
+              {t("hero.desc", { defaultValue: "Custom software · Mobile · AI & Data · Cloud-native · Ops" })}
+            </p>
+
+            <div style={{ marginTop: 18, display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
+              <a className="btn" href="#products">{t("hero.ctaView", { defaultValue: "View products" })}</a>
+              <a className="btn ghost" href="#contact">{t("hero.ctaContact", { defaultValue: "Contact us" })}</a>
+            </div>
           </div>
         </div>
       </div>
