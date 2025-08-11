@@ -142,23 +142,6 @@ function HeroContent({ lang, t }) {
       mq.removeEventListener?.("change", onChange) || mq.removeListener(onChange);
   }, []);
 
-  // Smooth-scroll for anchor links (with header offset)
-  const onAnchorClick = (e) => {
-    const href = e.currentTarget.getAttribute("href");
-    if (!href || !href.startsWith("#")) return;
-    e.preventDefault();
-    const id = href.slice(1);
-    const el = document.getElementById(id);
-    if (!el) return;
-
-    const offset = 90; // adjust to your fixed header height
-    const y = el.getBoundingClientRect().top + window.scrollY - offset;
-
-    window.scrollTo({ top: y, behavior: "smooth" });
-    // keep the URL hash in sync (optional)
-    history.replaceState(null, "", href);
-  };
-
   // --- tokenizers ---
   const hasCJK = (s) =>
     /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/u.test(
@@ -361,9 +344,7 @@ function HeroContent({ lang, t }) {
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
             style={{ marginTop: 14, display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}
           >
-            <a href="#products" className="eyebrow-btn" onClick={onAnchorClick}>
-              {eyebrow}
-            </a>
+            <a href="#products" className="eyebrow-btn" onClick={onAnchorClick}>{eyebrow}</a>
             <a className="btn" href="#products" onClick={onAnchorClick}>
               {t("hero.ctaView", { defaultValue: "View products" })}
             </a>

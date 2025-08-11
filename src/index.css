@@ -532,3 +532,5 @@ html{
 :root { --header-h: 68px; }
 @media (max-width: 720px){ :root { --header-h: 56px; } }
 [id] { scroll-margin-top: calc(var(--header-h) + 12px); }
+
+html { scroll-behavior: smooth; }
