@@ -285,10 +285,9 @@ function HeroContent({ lang, t }) {
             animate={descDone ? { opacity:1, y:0 } : { opacity:0, y:8 }}
             transition={{ duration:0.45, ease:[0.22,1,0.36,1] }}
           >
-            <a href="#products" className="eyebrow-btn">{eyebrow}</a>
-            <a className="btn" href="#products">{t("hero.ctaView", { defaultValue:"View products" })}</a>
-            <a className="btn ghost" href="#contact">{t("hero.ctaContact", { defaultValue:"Contact us" })}</a>
-          </motion.div>
+            <a href="#products" className="eyebrow-btn" onClick={onAnchorClick}>{eyebrow}</a>
+            <a className="btn" href="#products" onClick={onAnchorClick}>{t("hero.ctaView", { defaultValue:"View products" })}</a>
+            <a className="btn ghost" href="#contact" onClick={onAnchorClick}>{t("hero.ctaContact", { defaultValue:"Contact us" })}</a>
         </div>
       </div>
     </section>
