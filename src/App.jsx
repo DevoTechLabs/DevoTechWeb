@@ -2,7 +2,7 @@
 // 重点修复：把 .to(...) 全部改为 useTransform / useMotionTemplate；去除 react-spring 混用
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useScroll, useTransform, useMotionTemplate } from "framer-motion";
+import { motion, useScroll, useTransform, useMotionTemplate, useAnimation, useInView } from "framer-motion";
 import { useTranslation } from 'react-i18next'; // language switch
 import Partners from "./components/Partners.jsx";
 import QuickDock from "./components/QuickDock.jsx";
@@ -296,16 +296,98 @@ function HeroContent({ lang, t }) {
 }
 
 
-const FadeIn = ({ children, delay = 0 }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 12 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "-80px" }}
-    transition={{ duration: 0.6, delay }}
-  >
-    {children}
-  </motion.div>
-);
+function FadeIn({ children, delay = 0, y = 12, amount = 0.35 }) {
+  const ref = React.useRef(null);
+  const controls = useAnimation();
+  const inView = useInView(ref, { amount, margin: "-10% 0px -10% 0px" });
+
+  React.useEffect(() => {
+    // Re-play each time it enters; reset to hidden when it leaves
+    if (inView) controls.start("show");
+    else controls.start("hidden");
+  }, [inView, controls]);
+
+  return (
+    <motion.div
+      ref={ref}
+      variants={{
+        hidden: { opacity: 0, y },
+        show:   { opacity: 1, y: 0 }
+      }}
+      initial="hidden"
+      animate={controls}
+      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+function useSmartAnchorScroll() {
+  React.useEffect(() => {
+    const prefersReduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const ease = (t) => {
+      // cubic-bezier(0.22, 1, 0.36, 1)
+      return t < 0.5
+        ? ( ( ( ( 1.0 ) * t - 0.22 ) * t + 0.0 ) * t ) * 2 // quick ease-in approximation
+        : 1 - Math.pow(1 - t, 3);                         // ease-out
+    };
+
+    const animateScroll = (from, to, cb) => {
+      const distance = Math.abs(to - from);
+      // Duration depends on distance: clamp to [350ms, 1400ms]
+      const pxPerSec = 1600; // feel free to tune
+      const duration = Math.max(0.35, Math.min(1.4, distance / pxPerSec));
+      const start = performance.now();
+
+      const step = (now) => {
+        const t = Math.min(1, (now - start) / (duration * 1000));
+        const v = ease(t);
+        window.scrollTo(0, from + (to - from) * v);
+        if (t < 1) requestAnimationFrame(step);
+        else cb?.();
+      };
+      requestAnimationFrame(step);
+    };
+
+    const click = (e) => {
+      const a = e.target.closest('a[href^="#"]');
+      if (!a) return;
+
+      const raw = a.getAttribute("href");
+      const id = decodeURIComponent(raw.slice(1) || "");
+      if (!id) return;
+
+      const el = document.getElementById(id);
+      if (!el) return;
+
+      e.preventDefault();
+
+      const header = document.querySelector(".header");
+      const offset = (header?.offsetHeight || 68) + 12;
+
+      const targetY = Math.max(
+        0,
+        window.pageYOffset + el.getBoundingClientRect().top - offset
+      );
+
+      if (prefersReduce) {
+        window.scrollTo(0, targetY);
+        history.pushState(null, "", "#" + id);
+        return;
+      }
+
+      const startY = window.scrollY;
+      animateScroll(startY, targetY, () => {
+        history.pushState(null, "", "#" + id);
+      });
+    };
+
+    document.addEventListener("click", click);
+    return () => document.removeEventListener("click", click);
+  }, []);
+}
 
 function Products() {
   const items = [
@@ -643,6 +725,7 @@ function Footer() {
 }
 
 export default function App() {
+  useSmartAnchorScroll(); // ← enable smart scrolling everywhere
   return (
     <>
       <Header />
