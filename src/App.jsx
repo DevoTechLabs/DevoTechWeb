@@ -59,6 +59,7 @@ function Header() {
           <a href="#careers">{t("nav.careers", { defaultValue: "Careers" })}</a>
           <a href="#blog">{t("nav.blog", { defaultValue: "Blog" })}</a>
           <a href="#faq">{t("nav.faq", { defaultValue: "FAQ" })}</a>
+          <a href="#contact">{t("nav.contact", { defaultValue: "Contact" })}</a>
         </nav>
 
           {/* Right: controls */}
@@ -80,8 +81,6 @@ function Header() {
           >
             Menu
           </button>
-
-          <a className="btn" href="#contact">Get in Touch</a>
         </div>
       </div>
 
