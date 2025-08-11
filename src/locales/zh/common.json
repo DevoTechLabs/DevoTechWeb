@@ -26,5 +26,5 @@
     "ctaView": "查看产品",
     "ctaContact": "联系我们"
   },
-  "theme": { "title": "Thème", "dark": "Sombre", "light": "Clair" }
+  "theme": { "title": "主题", "dark": "深色", "light": "浅色" }
 }
