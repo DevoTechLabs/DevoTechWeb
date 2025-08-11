@@ -119,13 +119,21 @@ export default function QuickDock() {
                   </div>
 
                   <div className="pop-row">
-                    <LangDropdown
-                      value={lang}
-                      onChange={(code) => i18n.changeLanguage(code)}
-                      size="md"
-                      ariaLabel={t("lang.select", { defaultValue: "Language" })}
-                    />
+                    {/* keep Theme on the left */}
                     <ThemeSwitch size="md" />
+
+                    {/* right-aligned language group */}
+                    <div className="pop-right">
+                      <span className="pop-label">
+                        {t("lang.select", { defaultValue: "Language" })}
+                      </span>
+                      <LangDropdown
+                        value={lang}
+                        onChange={(code) => i18n.changeLanguage(code)}
+                        size="md"
+                        ariaLabel={t("lang.select", { defaultValue: "Language" })}
+                      />
+                    </div>
                   </div>
                 </motion.div>
               )}
