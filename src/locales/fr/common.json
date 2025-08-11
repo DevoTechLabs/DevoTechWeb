@@ -25,5 +25,6 @@
     "desc": "Logiciels sur mesure · Mobile · IA & données · Cloud-native · Ops",
     "ctaView": "Voir les produits",
     "ctaContact": "Nous contacter"
-  }
+  },
+  "theme": { "title": "主题", "dark": "深色", "light": "浅色" }
 }

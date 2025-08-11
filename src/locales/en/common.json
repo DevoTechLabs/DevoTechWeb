@@ -25,5 +25,6 @@
     "desc": "Custom software · Mobile · AI & Data · Cloud-native · Ops",
     "ctaView": "View products",
     "ctaContact": "Contact us"
-  }
+  },
+  "theme": { "title": "Theme", "dark": "Dark", "light": "Light" }
 }
