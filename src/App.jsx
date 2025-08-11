@@ -195,18 +195,7 @@ function Hero() {
       {/* content */}
       <div style={{ position:"relative", zIndex:2, display:"grid", placeItems:"center", minHeight:HERO_H, paddingInline:16 }}>
         <div style={{ maxWidth:1100, marginInline:"auto", width:"100%", textAlign:"center" }}>
-          {/* badge */}
-          <motion.span
-            initial={{ opacity:0, y:8, filter:"blur(6px)" }}
-            whileInView={{ opacity:1, y:0, filter:"blur(0px)" }}
-            viewport={{ once:true, rootMargin:"-12% 0px -12% 0px" }}
-            transition={{ duration:0.55, ease:[0.22,1,0.36,1] }}
-            className="badge"
-            style={{ display:"inline-block", padding:"8px 14px", borderRadius:999, background:"rgba(255,255,255,.06)", border:"1px solid rgba(255,255,255,.08)", fontSize:14 }}
-          >
-            {t("hero.badge", { defaultValue:"Empower Your Digital Future" })}
-          </motion.span>
-
+          
           {/* titles */}
           <motion.h1
             key={lang}
@@ -282,13 +271,22 @@ function Hero() {
 
           {/* CTAs — appear only after subtitle finishes */}
           <motion.div
-            initial={{ opacity:0, y:8 }}
-            animate={descDone ? { opacity:1, y:0 } : { opacity:0, y:8 }}
-            transition={{ duration:0.45, ease:[0.22,1,0.36,1] }}
-            style={{ marginTop:18, display:"flex", gap:10, justifyContent:"center", flexWrap:"wrap" }}
+            initial={{ opacity: 0, y: 8 }}
+            animate={descDone ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            style={{ marginTop: 18, display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}
           >
-            <a className="btn" href="#products">{t("hero.ctaView", { defaultValue:"View products" })}</a>
-            <a className="btn ghost" href="#contact">{t("hero.ctaContact", { defaultValue:"Contact us" })}</a>
+            {/* NEW: clickable pill (same timing as the buttons) */}
+            <a href="#products" className="eyebrow-btn">
+              {t("hero.eyebrow", { defaultValue: "Software · AI · Cloud" })}
+            </a>
+
+            <a className="btn" href="#products">
+              {t("hero.ctaView", { defaultValue: "View products" })}
+            </a>
+            <a className="btn ghost" href="#contact">
+              {t("hero.ctaContact", { defaultValue: "Contact us" })}
+            </a>
           </motion.div>
         </div>
       </div>
