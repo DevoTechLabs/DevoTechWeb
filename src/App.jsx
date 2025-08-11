@@ -6,8 +6,8 @@ import { motion, useScroll, useTransform, useMotionTemplate } from "framer-motio
 import { useTranslation } from 'react-i18next'; // language switch
 import Partners from "./components/Partners.jsx";
 import QuickDock from "./components/QuickDock.jsx";
-import LangSwitch from "./LangSwitch.jsx";
-import ThemeSwitch from "./ThemeSwitch.jsx";
+import LangSwitch from "./components/LangSwitch.jsx";
+import ThemeSwitch from "./components/ThemeSwitch.jsx";
 
 function useDarkMode() {
   const [theme, setTheme] = useState(
