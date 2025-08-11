@@ -428,3 +428,7 @@ html{
   .quickdock.rb{ right: 12px; bottom: 12px; }
   .dock-btn .label{ display: none; }
 }
+
+.quickdock { pointer-events: none; }           /* keep wrapper inert */
+.quickdock .dock { pointer-events: auto; }     /* bar is clickable */
+.quickdock .dock-pop { pointer-events: auto; } /* <-- make popover clickable too */
