@@ -8,6 +8,7 @@ import Partners from "./components/Partners.jsx";
 import QuickDock from "./components/QuickDock.jsx";
 import LangDropdown from "./components/LangDropdown.jsx";
 import ThemeSwitch from "./components/ThemeSwitch.jsx";
+import { onAnchorClick } from "./utils/smartScroll.js";
 
 function useDarkMode() {
   const [theme, setTheme] = useState(
@@ -51,17 +52,16 @@ function Header() {
 
         {/* Desktop nav */}
         <nav className="nav-desktop" aria-label="Primary">
-          <a href="#home">{t("nav.home", { defaultValue: "Home" })}</a>
-          <a href="#products">{t("nav.products", { defaultValue: "Products" })}</a>
-          <a href="#services">{t("nav.services", { defaultValue: "Services" })}</a>
-          <a href="#portfolio">{t("nav.portfolio", { defaultValue: "Cases" })}</a>
-          <a href="#team">{t("nav.team", { defaultValue: "Team" })}</a>
-          <a href="#careers">{t("nav.careers", { defaultValue: "Careers" })}</a>
-          <a href="#blog">{t("nav.blog", { defaultValue: "Blog" })}</a>
-          <a href="#faq">{t("nav.faq", { defaultValue: "FAQ" })}</a>
-          <a href="#contact">{t("nav.contact", { defaultValue: "Contact" })}</a>
+          <a href="#home" onClick={onAnchorClick}>{t("nav.home", { defaultValue: "Home" })}</a>
+          <a href="#products" onClick={onAnchorClick}>{t("nav.products", { defaultValue: "Products" })}</a>
+          <a href="#services" onClick={onAnchorClick}>{t("nav.services", { defaultValue: "Services" })}</a>
+          <a href="#portfolio" onClick={onAnchorClick}>{t("nav.portfolio", { defaultValue: "Cases" })}</a>
+          <a href="#team" onClick={onAnchorClick}>{t("nav.team", { defaultValue: "Team" })}</a>
+          <a href="#careers" onClick={onAnchorClick}>{t("nav.careers", { defaultValue: "Careers" })}</a>
+          <a href="#blog" onClick={onAnchorClick}>{t("nav.blog", { defaultValue: "Blog" })}</a>
+          <a href="#faq" onClick={onAnchorClick}>{t("nav.faq", { defaultValue: "FAQ" })}</a>
+          <a href="#contact" onClick={onAnchorClick}>{t("nav.contact", { defaultValue: "Contact" })}</a>
         </nav>
-
           {/* Right: controls */}
           <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
             <LangDropdown
@@ -96,15 +96,15 @@ function Header() {
             />
             <ThemeSwitch size="md" />
 
-            <a href="#home">{t("nav.home", { defaultValue: "Home" })}</a>
-            <a href="#products">{t("nav.products", { defaultValue: "Products" })}</a>
-            <a href="#services">{t("nav.services", { defaultValue: "Services" })}</a>
-            <a href="#portfolio">{t("nav.portfolio", { defaultValue: "Cases" })}</a>
-            <a href="#team">{t("nav.team", { defaultValue: "Team" })}</a>
-            <a href="#careers">{t("nav.careers", { defaultValue: "Careers" })}</a>
-            <a href="#blog">{t("nav.blog", { defaultValue: "Blog" })}</a>
-            <a href="#faq">{t("nav.faq", { defaultValue: "FAQ" })}</a>
-            <a href="#contact">{t("nav.contact", { defaultValue: "Contact" })}</a>
+            <a href="#home" onClick={(e)=>{ onAnchorClick(e); setOpen(false); }}>{t("nav.home", { defaultValue: "Home" })}</a>
+            <a href="#products" onClick={(e)=>{ onAnchorClick(e); setOpen(false); }}>{t("nav.products", { defaultValue: "Products" })}</a>
+            <a href="#services" onClick={(e)=>{ onAnchorClick(e); setOpen(false); }}>{t("nav.services", { defaultValue: "Services" })}</a>
+            <a href="#portfolio" onClick={(e)=>{ onAnchorClick(e); setOpen(false); }}>{t("nav.portfolio", { defaultValue: "Cases" })}</a>
+            <a href="#team" onClick={(e)=>{ onAnchorClick(e); setOpen(false); }}>{t("nav.team", { defaultValue: "Team" })}</a>
+            <a href="#careers" onClick={(e)=>{ onAnchorClick(e); setOpen(false); }}>{t("nav.careers", { defaultValue: "Careers" })}</a>
+            <a href="#blog" onClick={(e)=>{ onAnchorClick(e); setOpen(false); }}>{t("nav.blog", { defaultValue: "Blog" })}</a>
+            <a href="#faq" onClick={(e)=>{ onAnchorClick(e); setOpen(false); }}>{t("nav.faq", { defaultValue: "FAQ" })}</a>
+            <a href="#contact" onClick={(e)=>{ onAnchorClick(e); setOpen(false); }}>{t("nav.contact", { defaultValue: "Contact" })}</a>
           </div>
         </div>
       )}
@@ -322,77 +322,6 @@ function FadeIn({ children, delay = 0, y = 12, amount = 0.35 }) {
     </motion.div>
   );
 }
-
-/** Global distance-based smooth scrolling for in-page anchors (robust) */
-function useGlobalSmartScroll() {
-  React.useEffect(() => {
-    const prefersReduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
-
-    // easeInOutCubic
-    const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-
-    const animateTo = (to, done) => {
-      const from = window.pageYOffset;
-      const distance = Math.abs(to - from);
-      const duration = Math.min(1400, Math.max(350, (distance / 1600) * 1000)); // ms
-
-      const t0 = performance.now();
-      const tick = (now) => {
-        const t = Math.min(1, (now - t0) / duration);
-        const v = ease(t);
-        window.scrollTo(0, from + (to - from) * v);
-        if (t < 1) requestAnimationFrame(tick);
-        else done?.();
-      };
-      requestAnimationFrame(tick);
-    };
-
-    const headerOffset = () => {
-      const header = document.querySelector(".header");
-      return (header?.offsetHeight || 68) + 12;
-    };
-
-    const onClickCapture = (e) => {
-      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-
-      const a = e.target.closest('a[href^="#"]');
-      if (!a) return;
-
-      const href = a.getAttribute("href") || "";
-      if (href === "#" || href === "#!") return;
-
-      const id = decodeURIComponent(href.slice(1));
-      const target = document.getElementById(id);
-      if (!target) return; // let browser handle external or missing ids
-
-      e.preventDefault();
-
-      const to = Math.max(0, window.pageYOffset + target.getBoundingClientRect().top - headerOffset());
-
-      if (prefersReduced) {
-        window.scrollTo(0, to);
-        history.pushState(null, "", "#" + id);
-        return;
-      }
-
-      // Animate, then update hash
-      animateTo(to, () => history.pushState(null, "", "#" + id));
-
-      // Watchdog: if nothing moved after a tick (rare), force a native smooth scroll
-      setTimeout(() => {
-        if (Math.abs(window.pageYOffset - to) < 2) {
-          target.scrollIntoView({ behavior: "smooth", block: "start" });
-          // compensate header after native smooth finishes
-          setTimeout(() => window.scrollTo(0, Math.max(0, window.pageYOffset - headerOffset())), 50);
-        }
-      }, 50);
-    };
-
-    document.addEventListener("click", onClickCapture, { capture: true });
-    return () => document.removeEventListener("click", onClickCapture, { capture: true });
-  }, []);
-}
-
 
 function Products() {
   const items = [
@@ -730,7 +659,6 @@ function Footer() {
 }
 
 export default function App() {
-  useGlobalSmartScroll();
   return (
     <>
       <Header />

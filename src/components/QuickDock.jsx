@@ -3,6 +3,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import LangDropdown from "./LangDropdown.jsx";
 import ThemeSwitch from "./ThemeSwitch.jsx";
+import { onAnchorClick } from "../utils/smartScroll.js";
+
 
 export default function QuickDock() {
   const { t, i18n } = useTranslation();
@@ -79,12 +81,47 @@ export default function QuickDock() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18 }}
           >
-            <a className="dock-btn" href="#home"      title={labels.home}><HomeIcon /><span className="label">{labels.home}</span></a>
-            <a className="dock-btn" href="#products"  title={labels.products}><BoxIcon /><span className="label">{labels.products}</span></a>
-            <a className="dock-btn" href="#portfolio" title={labels.portfolio}><CaseIcon /><span className="label">{labels.portfolio}</span></a>
-            <a className="dock-btn" href="#contact"   title={labels.contact}><MailIcon /><span className="label">{labels.contact}</span></a>
+            <a
+              className="dock-btn"
+              href="#home"
+              onClick={onAnchorClick}
+              title={labels.home}
+            >
+              <HomeIcon />
+              <span className="label">{labels.home}</span>
+            </a>
 
-            {/* More */}
+            <a
+              className="dock-btn"
+              href="#products"
+              onClick={onAnchorClick}
+              title={labels.products}
+            >
+              <BoxIcon />
+              <span className="label">{labels.products}</span>
+            </a>
+
+            <a
+              className="dock-btn"
+              href="#portfolio"
+              onClick={onAnchorClick}
+              title={labels.portfolio}
+            >
+              <CaseIcon />
+              <span className="label">{labels.portfolio}</span>
+            </a>
+
+            <a
+              className="dock-btn"
+              href="#contact"
+              onClick={onAnchorClick}
+              title={labels.contact}
+            >
+              <MailIcon />
+              <span className="label">{labels.contact}</span>
+            </a>
+
+            {/* More button (keeps its own click logic) */}
             <button
               ref={btnRef}
               type="button"
@@ -94,10 +131,11 @@ export default function QuickDock() {
               aria-haspopup="menu"
               title={labels.more}
             >
-              <DotsIcon /><span className="label">{labels.more}</span>
+              <DotsIcon />
+              <span className="label">{labels.more}</span>
             </button>
 
-            {/* Popover */}
+            {/* Popover links also use smooth scroll and close the menu */}
             <AnimatePresence>
               {menuOpen && (
                 <motion.div
@@ -111,29 +149,31 @@ export default function QuickDock() {
                   role="menu"
                 >
                   <div className="pop-grid">
-                    <a href="#services" className="pop-item" role="menuitem">{labels.services}</a>
-                    <a href="#team"     className="pop-item" role="menuitem">{labels.team}</a>
-                    <a href="#careers"  className="pop-item" role="menuitem">{labels.careers}</a>
-                    <a href="#blog"     className="pop-item" role="menuitem">{labels.blog}</a>
-                    <a href="#faq"      className="pop-item" role="menuitem">{labels.faq}</a>
+                    <a href="#services" className="pop-item" role="menuitem" onClick={(e)=>{ onAnchorClick(e); setMenuOpen(false); }}>
+                      {labels.services}
+                    </a>
+                    <a href="#team" className="pop-item" role="menuitem" onClick={(e)=>{ onAnchorClick(e); setMenuOpen(false); }}>
+                      {labels.team}
+                    </a>
+                    <a href="#careers" className="pop-item" role="menuitem" onClick={(e)=>{ onAnchorClick(e); setMenuOpen(false); }}>
+                      {labels.careers}
+                    </a>
+                    <a href="#blog" className="pop-item" role="menuitem" onClick={(e)=>{ onAnchorClick(e); setMenuOpen(false); }}>
+                      {labels.blog}
+                    </a>
+                    <a href="#faq" className="pop-item" role="menuitem" onClick={(e)=>{ onAnchorClick(e); setMenuOpen(false); }}>
+                      {labels.faq}
+                    </a>
                   </div>
 
                   <div className="pop-row">
-                    {/* keep Theme on the left */}
+                    <LangDropdown
+                      value={lang}
+                      onChange={(code) => i18n.changeLanguage(code)}
+                      size="md"
+                      ariaLabel={t("lang.select", { defaultValue: "Language" })}
+                    />
                     <ThemeSwitch size="md" />
-
-                    {/* right-aligned language group */}
-                    <div className="pop-right">
-                      <span className="pop-label">
-                        {t("lang.select", { defaultValue: "Language" })}
-                      </span>
-                      <LangDropdown
-                        value={lang}
-                        onChange={(code) => i18n.changeLanguage(code)}
-                        size="md"
-                        ariaLabel={t("lang.select", { defaultValue: "Language" })}
-                      />
-                    </div>
                   </div>
                 </motion.div>
               )}
