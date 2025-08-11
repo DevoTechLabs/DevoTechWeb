@@ -167,7 +167,7 @@ function HeroContent({ lang, t }) {
   const [descDone, setDescDone] = useState(false);
 
   // timings
-  const containerSlow = { hidden: {}, show: { transition: { staggerChildren: 0.32, delayChildren: 0.20 } } };
+  const containerSlow = { hidden: {}, show: { transition: { staggerChildren: 0.22, delayChildren: 0.20 } } };
   const tokenSlow     = { hidden: { opacity:0, y:16, filter:"blur(10px)" },
                           show:   { opacity:1, y:0, filter:"blur(0px)", transition:{ duration:0.70, ease:[0.22,1,0.36,1] } } };
 
