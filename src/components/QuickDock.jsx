@@ -88,7 +88,7 @@ export default function QuickDock() {
           {/* Popover */}
           <AnimatePresence>
             {menuOpen && (
-                <motion.div
+              <motion.div
                 key={lang}                 // crossfade labels on language change
                 ref={popRef}
                 className="dock-pop"
@@ -97,12 +97,37 @@ export default function QuickDock() {
                 exit={{ opacity: 0, y: 8, scale: 0.98 }}
                 transition={{ duration: 0.18, ease: [0.22,1,0.36,1] }}
                 role="menu"
-                >
-                {/* ...same content... */}
-                </motion.div>
+              >
+                <div className="pop-grid">
+                  <a href="#home"      className="pop-item" role="menuitem">{labels.top}</a>
+                  <a href="#team"      className="pop-item" role="menuitem">{labels.team}</a>
+                  <a href="#careers"   className="pop-item" role="menuitem">{labels.careers}</a>
+                  <a href="#blog"      className="pop-item" role="menuitem">{labels.blog}</a>
+                  <a href="#faq"       className="pop-item" role="menuitem">{labels.faq}</a>
+                </div>
+
+                <div className="pop-row">
+                  <label htmlFor="dock-lang" className="sr-only">{labels.lang}</label>
+                  <select
+                    id="dock-lang"
+                    className="pop-select"
+                    value={lang}
+                    onChange={(e) => i18n.changeLanguage(e.target.value)}
+                  >
+                    <option value="en">EN</option>
+                    <option value="zh">中文</option>
+                    <option value="fr">FR</option>
+                  </select>
+
+                  <button className="pop-btn" type="button" onClick={toggleTheme}>
+                    <SunMoonIcon /><span>Theme</span>
+                  </button>
+
+                  <a className="pop-btn" href="#home"><UpIcon /><span>Top</span></a>
+                </div>
+              </motion.div>
             )}
           </AnimatePresence>
-
         </motion.nav>
       )}
     </AnimatePresence>
