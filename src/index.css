@@ -321,14 +321,15 @@ html{
   margin-bottom: 2px;           /* tiny spacing above buttons */
 }
 
-.quickdock{
+/* Bottom-right dock */
+.quickdock.rb{
   position: fixed;
-  z-index: 120;             /* higher than header/video just in case */
-  left: 50%;
-  bottom: 16px;
-  transform: translateX(-50%);
-  pointer-events: none;
+  z-index: 120;
+  right: 20px;                 /* spacing from right edge */
+  bottom: 20px;                /* spacing from bottom edge */
+  pointer-events: none;        /* only inner elements clickable */
 }
+
 .quickdock .dock{
   pointer-events: auto;
   display: flex;
@@ -340,11 +341,90 @@ html{
   box-shadow: 0 8px 28px rgba(0,0,0,.25);
   backdrop-filter: blur(12px);
 }
-.dock-btn{ display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; text-decoration:none; color:inherit; border:1px solid transparent; transition:transform .16s, background-color .16s, border-color .16s; }
-.dock-btn:hover{ background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.12); transform:translateY(-1px); }
+
+.dock-btn{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid transparent;
+  background: transparent;
+  transition: transform .16s ease, background-color .16s ease, border-color .16s ease;
+  cursor: pointer;
+}
+.dock-btn:hover{
+  background: rgba(255,255,255,.08);
+  border-color: rgba(255,255,255,.12);
+  transform: translateY(-1px);
+}
+
+/* Popover */
+.dock-pop{
+  position: absolute;
+  right: 20px;   /* align with dock’s right spacing */
+  bottom: 64px;  /* pop above the dock */
+  min-width: 280px;
+  max-width: 90vw;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(2,6,23,.75);
+  box-shadow: 0 16px 40px rgba(0,0,0,.35);
+  backdrop-filter: blur(12px);
+}
+
+.pop-grid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 8px;
+}
+.pop-item{
+  display: block;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  color: inherit;
+  text-decoration: none;
+  background: rgba(255,255,255,.04);
+  transition: background-color .16s ease, border-color .16s ease, transform .16s ease;
+}
+.pop-item:hover{ background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.12); transform: translateY(-1px); }
+
+.pop-row{
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+.pop-select, .pop-btn{
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+  color: inherit;
+  padding: 0 10px;
+}
+.pop-btn{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Light theme */
 [data-theme="light"] .quickdock .dock{ background: rgba(255,255,255,.65); border-color: rgba(2,6,23,.12); }
 [data-theme="light"] .dock-btn:hover{ background: rgba(2,6,23,.06); border-color: rgba(2,6,23,.12); }
+[data-theme="light"] .dock-pop{ background: rgba(255,255,255,.86); border-color: rgba(2,6,23,.12); }
+[data-theme="light"] .pop-item{ background: rgba(2,6,23,.04); }
+[data-theme="light"] .pop-item:hover{ background: rgba(2,6,23,.08); border-color: rgba(2,6,23,.12); }
+
+/* Mobile: icon-only dock */
 @media (max-width: 720px){
-  .quickdock{ bottom: 12px; }
+  .quickdock.rb{ right: 12px; bottom: 12px; }
   .dock-btn .label{ display: none; }
 }
