@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 export default function LangDropdown({
   value = "en",
@@ -8,9 +8,11 @@ export default function LangDropdown({
 }) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(() => ["en","zh","fr"].indexOf(value));
-  const wrapRef = useRef(null);
-  const btnRef = useRef(null);
+  const [placement, setPlacement] = useState("bottom"); // 'bottom' | 'top'
+  const [menuMaxH, setMenuMaxH] = useState(undefined);
 
+  const wrapRef = useRef(null);
+  const menuRef = useRef(null);
   const items = [
     { id: "en", label: "EN" },
     { id: "zh", label: "中文" },
@@ -19,18 +21,38 @@ export default function LangDropdown({
 
   // close on outside / Esc
   useEffect(() => {
-    const onDown = (e) => {
-      if (wrapRef.current?.contains(e.target)) return;
-      setOpen(false);
-    };
+    const onDown = (e) => { if (!wrapRef.current?.contains(e.target)) setOpen(false); };
     const onEsc = (e) => { if (e.key === "Escape") setOpen(false); };
     window.addEventListener("pointerdown", onDown);
     window.addEventListener("keydown", onEsc);
-    return () => {
-      window.removeEventListener("pointerdown", onDown);
-      window.removeEventListener("keydown", onEsc);
-    };
+    return () => { window.removeEventListener("pointerdown", onDown); window.removeEventListener("keydown", onEsc); };
   }, []);
+
+  // when opening: reset active to current, and decide top/bottom placement
+  useLayoutEffect(() => {
+    if (!open) return;
+    const idx = items.findIndex(i => i.id === value);
+    setActive(idx < 0 ? 0 : idx);
+
+    const gap = 8; // px gap around menu
+    const wrap = wrapRef.current;
+    if (!wrap) return;
+    const rect = wrap.getBoundingClientRect();
+    const vh = window.innerHeight;
+
+    // estimate desired popup height (fallback cap)
+    const desired = 280;
+    const spaceBelow = vh - (rect.top + rect.height) - gap;
+    const spaceAbove = rect.top - gap;
+
+    if (spaceBelow >= 160) {
+      setPlacement("bottom");
+      setMenuMaxH(Math.max(140, Math.min(desired, spaceBelow)));
+    } else {
+      setPlacement("top");
+      setMenuMaxH(Math.max(140, Math.min(desired, spaceAbove)));
+    }
+  }, [open, value]);
 
   // keyboard nav
   const onKey = (e) => {
@@ -52,7 +74,6 @@ export default function LangDropdown({
   return (
     <div ref={wrapRef} className={`select ${size}`} aria-label={ariaLabel}>
       <button
-        ref={btnRef}
         type="button"
         className="select-btn"
         aria-haspopup="listbox"
@@ -65,7 +86,13 @@ export default function LangDropdown({
       </button>
 
       {open && (
-        <ul className="select-menu" role="listbox" aria-label={ariaLabel}>
+        <ul
+          ref={menuRef}
+          className={`select-menu ${placement}`}
+          role="listbox"
+          aria-label={ariaLabel}
+          style={{ maxHeight: menuMaxH ? `${menuMaxH}px` : undefined }}
+        >
           {items.map((it, i) => {
             const isSel = it.id === value;
             const isAct = i === active;

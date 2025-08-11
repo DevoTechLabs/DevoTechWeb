@@ -440,8 +440,8 @@ html{
 [data-theme="light"] .seg-btn:hover{ background: rgba(2,6,23,.08); }
 [data-theme="light"] .seg-btn.active{ background: rgba(2,6,23,.14); box-shadow: 0 0 0 1px rgba(2,6,23,.08) inset; }
 
-/* Themed dropdown */
-.select{ position: relative; }
+/* Themed dropdown (container should size to the button width) */
+.select{ position: relative; display: inline-block; }
 .select.sm .select-btn{ min-height: 32px; font-size: 13px; padding: 6px 12px; }
 .select.md .select-btn{ min-height: 36px; font-size: 14px; padding: 8px 12px; }
 
@@ -456,18 +456,27 @@ html{
 }
 .select-btn:hover{ background: rgba(255,255,255,.1); transform: translateY(-1px); }
 
+/* Popup — matches button width; remove bullets; flip support */
 .select-menu{
-  position:absolute; right:0; top: calc(100% + 6px);
-  min-width: 120px; padding: 6px;
-  border-radius: 10px; z-index: 200;
+  position:absolute;
+  right:0;
+  width: 100%;                 /* <-- exact same width as button */
+  margin: 0; padding: 6px;
+  list-style: none;            /* <-- no dots */
+  border-radius: 12px; z-index: 200;
   border:1px solid rgba(255,255,255,.12);
   background: rgba(2,6,23,.9);
   backdrop-filter: blur(12px);
   box-shadow: 0 10px 30px rgba(0,0,0,.35);
+  overflow-y: auto;            /* scroll if tall */
 }
+.select-menu.bottom{ top: calc(100% + 6px); bottom: auto; }
+.select-menu.top{    bottom: calc(100% + 6px); top: auto; }
+
+.select-menu li{ list-style: none; margin: 0; padding: 0; }
 .select-item{
   width:100%; text-align:left;
-  padding: 8px 10px; border-radius: 8px; color: inherit;
+  padding: 9px 10px; border-radius: 8px; color: inherit;
   background: transparent; border: 1px solid transparent; cursor:pointer;
   transition: background-color .12s ease, border-color .12s ease;
 }
