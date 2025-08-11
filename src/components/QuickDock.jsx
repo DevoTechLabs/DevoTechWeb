@@ -1,6 +1,5 @@
-// src/components/QuickDock.jsx
-import React, { useState } from "react";
-import { AnimatePresence, motion, useScroll, useMotionValueEvent } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 
 export default function QuickDock() {
@@ -8,8 +7,38 @@ export default function QuickDock() {
   const lang = (i18n.resolvedLanguage || i18n.language || "en").split("-")[0];
 
   const [show, setShow] = useState(false);
-  const { scrollY } = useScroll();
-  useMotionValueEvent(scrollY, "change", (y) => setShow(y > 140));
+
+  useEffect(() => {
+    // Try to observe the header; fall back to scroll threshold if not found
+    const header = document.querySelector(".header");
+    let cleanup = () => {};
+
+    if (header && "IntersectionObserver" in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          const e = entries[0];
+          // show when header is mostly out of view
+          setShow(e.isIntersecting === false);
+        },
+        {
+          root: null,
+          // start hiding once ~60px of header has scrolled past
+          rootMargin: "-60px 0px 0px 0px",
+          threshold: [0, 0.1, 0.9, 1]
+        }
+      );
+      io.observe(header);
+      cleanup = () => io.disconnect();
+    } else {
+      // Fallback: simple scroll threshold
+      const onScroll = () => setShow(window.scrollY > 140);
+      onScroll();
+      window.addEventListener("scroll", onScroll, { passive: true });
+      cleanup = () => window.removeEventListener("scroll", onScroll);
+    }
+
+    return cleanup;
+  }, []);
 
   const labels = {
     top:       t("nav.home",      { defaultValue: "Home" }),
@@ -20,10 +49,10 @@ export default function QuickDock() {
   };
 
   const enterExit = {
-    initial:   { y: 24, opacity: 0, filter: "blur(8px)" },
-    animate:   { y: 0,  opacity: 1, filter: "blur(0px)" },
-    exit:      { y: 24, opacity: 0, filter: "blur(8px)" },
-    transition:{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }
+    initial:    { y: 24, opacity: 0, filter: "blur(8px)" },
+    animate:    { y: 0,  opacity: 1, filter: "blur(0px)" },
+    exit:       { y: 24, opacity: 0, filter: "blur(8px)" },
+    transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] }
   };
 
   return (
@@ -34,7 +63,7 @@ export default function QuickDock() {
           className="quickdock"
           {...enterExit}
         >
-          {/* Key on lang so labels crossfade when switching language */}
+          {/* Key on lang so labels crossfade on language switch */}
           <motion.div
             className="dock"
             key={lang}
