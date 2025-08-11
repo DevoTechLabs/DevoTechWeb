@@ -5,6 +5,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useMotionTemplate } from "framer-motion";
 import { useTranslation } from 'react-i18next'; // language switch
 import Partners from "./components/Partners.jsx";
+import QuickDock from "./components/QuickDock.jsx";
 
 function useDarkMode() {
   const [theme, setTheme] = useState(
@@ -644,7 +645,8 @@ export default function App() {
     <>
       <Header />
       <Hero />
-
+      <QuickDock />   {/* <-- floating fast navigation */}
+      
       {/* NEW: real logo grid */}
       <Partners />
 

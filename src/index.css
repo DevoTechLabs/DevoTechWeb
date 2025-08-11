@@ -320,3 +320,59 @@ html{
   text-align: center;
   margin-bottom: 2px;           /* tiny spacing above buttons */
 }
+
+/* Floating quick nav dock */
+.quickdock{
+  position: fixed;
+  z-index: 60;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  pointer-events: none; /* only the inner dock is clickable */
+}
+
+.quickdock .dock{
+  pointer-events: auto;
+  display: flex;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 999px;
+  border: 1px solid var(--dock-border, rgba(255,255,255,.12));
+  background: var(--dock-bg, rgba(2,6,23,.55));
+  box-shadow: 0 8px 28px rgba(0,0,0,.25);
+  backdrop-filter: blur(12px);
+}
+
+/* nav buttons */
+.dock-btn{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid transparent;
+  transition: transform .16s ease, background-color .16s ease, border-color .16s ease;
+}
+.dock-btn:hover{
+  background: rgba(255,255,255,.08);
+  border-color: rgba(255,255,255,.12);
+  transform: translateY(-1px);
+}
+
+/* Light theme */
+[data-theme="light"] .quickdock .dock{
+  background: rgba(255,255,255,.65);
+  border-color: rgba(2,6,23,.12);
+}
+[data-theme="light"] .dock-btn:hover{
+  background: rgba(2,6,23,.06);
+  border-color: rgba(2,6,23,.12);
+}
+
+/* Compact on small screens: show icons, hide labels */
+@media (max-width: 720px){
+  .quickdock{ bottom: 12px; }
+  .dock-btn .label{ display: none; }
+}
