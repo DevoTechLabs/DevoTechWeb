@@ -323,19 +323,16 @@ function FadeIn({ children, delay = 0, y = 12, amount = 0.35 }) {
   );
 }
 
-/** Global distance-based smooth scrolling for in-page anchors */
+/** Global distance-based smooth scrolling for in-page anchors (robust) */
 function useGlobalSmartScroll() {
   React.useEffect(() => {
-    const scroller =
-      document.scrollingElement || document.documentElement; // robust target
-
     const prefersReduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
 
     // easeInOutCubic
     const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
-    const animateTo = (to) => {
-      const from = scroller.scrollTop;
+    const animateTo = (to, done) => {
+      const from = window.pageYOffset;
       const distance = Math.abs(to - from);
       const duration = Math.min(1400, Math.max(350, (distance / 1600) * 1000)); // ms
 
@@ -343,19 +340,19 @@ function useGlobalSmartScroll() {
       const tick = (now) => {
         const t = Math.min(1, (now - t0) / duration);
         const v = ease(t);
-        scroller.scrollTop = from + (to - from) * v;
+        window.scrollTo(0, from + (to - from) * v);
         if (t < 1) requestAnimationFrame(tick);
+        else done?.();
       };
       requestAnimationFrame(tick);
     };
 
-    const getHeaderOffset = () => {
+    const headerOffset = () => {
       const header = document.querySelector(".header");
       return (header?.offsetHeight || 68) + 12;
     };
 
     const onClickCapture = (e) => {
-      // respect already-handled/modified clicks
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
 
       const a = e.target.closest('a[href^="#"]');
@@ -366,28 +363,36 @@ function useGlobalSmartScroll() {
 
       const id = decodeURIComponent(href.slice(1));
       const target = document.getElementById(id);
-      if (!target) return; // not an in-page target → let browser handle
+      if (!target) return; // let browser handle external or missing ids
 
       e.preventDefault();
 
-      const to =
-        Math.max(0, scroller.scrollTop + target.getBoundingClientRect().top - getHeaderOffset());
+      const to = Math.max(0, window.pageYOffset + target.getBoundingClientRect().top - headerOffset());
 
       if (prefersReduced) {
-        scroller.scrollTop = to;
-      } else {
-        animateTo(to);
+        window.scrollTo(0, to);
+        history.pushState(null, "", "#" + id);
+        return;
       }
 
-      // update the hash without triggering the browser's default jump
-      history.pushState(null, "", "#" + id);
+      // Animate, then update hash
+      animateTo(to, () => history.pushState(null, "", "#" + id));
+
+      // Watchdog: if nothing moved after a tick (rare), force a native smooth scroll
+      setTimeout(() => {
+        if (Math.abs(window.pageYOffset - to) < 2) {
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
+          // compensate header after native smooth finishes
+          setTimeout(() => window.scrollTo(0, Math.max(0, window.pageYOffset - headerOffset())), 50);
+        }
+      }, 50);
     };
 
-    // capture phase ensures we run before any stopPropagation
     document.addEventListener("click", onClickCapture, { capture: true });
     return () => document.removeEventListener("click", onClickCapture, { capture: true });
   }, []);
 }
+
 
 function Products() {
   const items = [
