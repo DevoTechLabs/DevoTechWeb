@@ -125,8 +125,6 @@ function Logo() {
 function Hero() {
   const { t, i18n } = useTranslation();
   const lang = (i18n.resolvedLanguage || "en").split("-")[0];
-
-  // Remount everything below when language changes (state resets before paint)
   return <HeroContent key={lang} lang={lang} t={t} />;
 }
 
@@ -137,95 +135,172 @@ function HeroContent({ lang, t }) {
   const [isNarrow, setIsNarrow] = useState(false);
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 560px)");
-    const onChange = e => setIsNarrow(e.matches);
+    const onChange = (e) => setIsNarrow(e.matches);
     onChange(mq);
     mq.addEventListener?.("change", onChange) || mq.addListener(onChange);
-    return () => mq.removeEventListener?.("change", onChange) || mq.removeListener(onChange);
+    return () =>
+      mq.removeEventListener?.("change", onChange) || mq.removeListener(onChange);
   }, []);
 
+  // Smooth-scroll for anchor links (with header offset)
+  const onAnchorClick = (e) => {
+    const href = e.currentTarget.getAttribute("href");
+    if (!href || !href.startsWith("#")) return;
+    e.preventDefault();
+    const id = href.slice(1);
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    const offset = 90; // adjust to your fixed header height
+    const y = el.getBoundingClientRect().top + window.scrollY - offset;
+
+    window.scrollTo({ top: y, behavior: "smooth" });
+    // keep the URL hash in sync (optional)
+    history.replaceState(null, "", href);
+  };
+
   // --- tokenizers ---
-  const hasCJK = s =>
-    /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/u.test(s);
-  const normalizeSeps = s => s.replace(/[·•—–-]/g, m => ` ${m} `);
-  const tokenize = s => {
-    if (hasCJK(s)) return Array.from(s.replace(/\s+/g, ""));     // per-char for CJK
-    const norm = normalizeSeps(s).replace(/\s+/g, " ").trim();   // per-word otherwise
+  const hasCJK = (s) =>
+    /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/u.test(
+      s
+    );
+  const normalizeSeps = (s) => s.replace(/[·•—–-]/g, (m) => ` ${m} `);
+  const tokenize = (s) => {
+    if (hasCJK(s)) return Array.from(s.replace(/\s+/g, ""));
+    const norm = normalizeSeps(s).replace(/\s+/g, " ").trim();
     return norm ? norm.split(" ") : [];
   };
 
   // copy
-  const raw1    = t("hero.title1", { defaultValue: "Devotion · Evolution · Volition" });
-  const raw2    = t("hero.title2", { defaultValue: "DevoTech keeps you on track" });
-  const rawDesc = t("hero.desc",   { defaultValue: "Custom software · Mobile · AI & Data · Cloud-native · Ops" });
+  const raw1 = t("hero.title1", { defaultValue: "Devotion · Evolution · Volition" });
+  const raw2 = t("hero.title2", { defaultValue: "DevoTech keeps you on track" });
+  const rawDesc = t("hero.desc", {
+    defaultValue: "Custom software · Mobile · AI & Data · Cloud-native · Ops",
+  });
   const eyebrow = t("hero.eyebrow", { defaultValue: "Software · AI · Cloud" });
 
   // tokens
-  const t1    = tokenize(raw1);
-  const t2    = tokenize(raw2);
+  const t1 = tokenize(raw1);
+  const t2 = tokenize(raw2);
   const tDesc = tokenize(rawDesc);
 
-  // sequencing gates (fresh on remount because of key={lang})
-  const [t1Done,   setT1Done]   = useState(false);
-  const [t2Done,   setT2Done]   = useState(false);
+  // sequencing gates
+  const [t1Done, setT1Done] = useState(false);
+  const [t2Done, setT2Done] = useState(false);
   const [descDone, setDescDone] = useState(false);
 
   // timings
-  const containerSlow = { hidden: {}, show: { transition: { staggerChildren: 0.22, delayChildren: 0.20 } } };
-  const tokenSlow     = { hidden: { opacity:0, y:16, filter:"blur(10px)" },
-                          show:   { opacity:1, y:0, filter:"blur(0px)", transition:{ duration:0.70, ease:[0.22,1,0.36,1] } } };
+  const containerSlow = {
+    hidden: {},
+    show: { transition: { staggerChildren: 0.22, delayChildren: 0.2 } },
+  };
+  const tokenSlow = {
+    hidden: { opacity: 0, y: 16, filter: "blur(10px)" },
+    show: {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
+    },
+  };
 
-  const containerFast = { hidden: {}, show: { transition: { staggerChildren: 0.06, delayChildren: 0.12 } } };
-  const tokenFast     = { hidden: { opacity:0, y:14, filter:"blur(8px)" },
-                          show:   { opacity:1, y:0, filter:"blur(0px)", transition:{ duration:0.55, ease:[0.22,1,0.36,1] } } };
+  const containerFast = {
+    hidden: {},
+    show: { transition: { staggerChildren: 0.06, delayChildren: 0.12 } },
+  };
+  const tokenFast = {
+    hidden: { opacity: 0, y: 14, filter: "blur(8px)" },
+    show: {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
+    },
+  };
 
   return (
     <section
       id="home"
       aria-label="Hero"
-      style={{ position:"relative", left:"50%", right:"50%", marginLeft:"-50vw", marginRight:"-50vw", width:"100vw", minHeight:HERO_H }}
+      style={{
+        position: "relative",
+        left: "50%",
+        right: "50%",
+        marginLeft: "-50vw",
+        marginRight: "-50vw",
+        width: "100vw",
+        minHeight: HERO_H,
+      }}
     >
       {/* background media */}
-      <div style={{ position:"absolute", inset:0, overflow:"hidden", zIndex:0 }}>
+      <div style={{ position: "absolute", inset: 0, overflow: "hidden", zIndex: 0 }}>
         <video
-          autoPlay muted loop playsInline preload="auto" poster="/hero.jpg"
-          style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", filter:"brightness(.9)" }}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster="/hero.jpg"
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            filter: "brightness(.9)",
+          }}
         >
           <source src="/hero.webm" type="video/webm" />
-          <source src="/hero.mp4"  type="video/mp4" />
+          <source src="/hero.mp4" type="video/mp4" />
         </video>
         <div
           style={{
-            position:"absolute", inset:0, zIndex:1,
+            position: "absolute",
+            inset: 0,
+            zIndex: 1,
             background:
               "radial-gradient(1000px 500px at 50% 20%, rgba(96,165,250,.18), transparent 60%)," +
-              "linear-gradient(180deg, rgba(2,6,23,0) 0%, rgba(2,6,23,.45) 65%, rgba(2,6,23,.70) 100%)"
+              "linear-gradient(180deg, rgba(2,6,23,0) 0%, rgba(2,6,23,.45) 65%, rgba(2,6,23,.70) 100%)",
           }}
         />
       </div>
 
       {/* content */}
-      <div style={{ position:"relative", zIndex:2, display:"grid", placeItems:"center", minHeight:HERO_H, paddingInline:16 }}>
-        <div style={{ maxWidth:1100, marginInline:"auto", width:"100%", textAlign:"center" }}>
-
+      <div
+        style={{
+          position: "relative",
+          zIndex: 2,
+          display: "grid",
+          placeItems: "center",
+          minHeight: HERO_H,
+          paddingInline: 16,
+        }}
+      >
+        <div style={{ maxWidth: 1100, marginInline: "auto", width: "100%", textAlign: "center" }}>
           {/* Titles */}
           <motion.h1
-            style={{ marginTop:14, lineHeight:1.1 }}
+            style={{ marginTop: 14, lineHeight: 1.1 }}
             initial="hidden"
             whileInView="show"
-            viewport={{ once:true, rootMargin:"-12% 0px -12% 0px" }}
+            viewport={{ once: true, rootMargin: "-12% 0px -12% 0px" }}
           >
             {/* Title 1 — slow */}
             <motion.span
               className="hero-title1"
               variants={containerSlow}
-              style={{ display:"inline-flex", flexWrap: isNarrow ? "wrap" : "nowrap", gap:"0.38ch", justifyContent:"center" }}
+              style={{
+                display: "inline-flex",
+                flexWrap: isNarrow ? "wrap" : "nowrap",
+                gap: "0.38ch",
+                justifyContent: "center",
+              }}
             >
               {t1.map((tok, i) => (
                 <motion.span
                   key={`t1-${i}-${tok}`}
                   className="hero-word"
                   variants={tokenSlow}
-                  style={{ display:"inline-block" }}
+                  style={{ display: "inline-block" }}
                   onAnimationComplete={i === t1.length - 1 ? () => setT1Done(true) : undefined}
                 >
                   {tok}
@@ -234,13 +309,13 @@ function HeroContent({ lang, t }) {
             </motion.span>
 
             {/* Title 2 — fast, gated by Title 1 */}
-            <div style={{ display:"flex", justifyContent:"center" }}>
+            <div style={{ display: "flex", justifyContent: "center" }}>
               <motion.span
                 className="hero-title2"
                 variants={containerFast}
                 initial="hidden"
                 animate={t1Done ? "show" : "hidden"}
-                style={{ marginTop:6, display:"inline-flex", gap:"0.3ch", flexWrap:"wrap", justifyContent:"center" }}
+                style={{ marginTop: 6, display: "inline-flex", gap: "0.3ch", flexWrap: "wrap", justifyContent: "center" }}
               >
                 {t2.map((tok, i) => (
                   <motion.span
@@ -262,9 +337,9 @@ function HeroContent({ lang, t }) {
             variants={containerFast}
             initial="hidden"
             animate={t2Done ? "show" : "hidden"}
-            style={{ color:"var(--muted)", marginTop:8, maxWidth:880, marginInline:"auto" }}
+            style={{ color: "var(--muted)", marginTop: 8, maxWidth: 880, marginInline: "auto" }}
           >
-            <span style={{ display:"inline-flex", gap:"0.35ch", flexWrap:"wrap", justifyContent:"center" }}>
+            <span style={{ display: "inline-flex", gap: "0.35ch", flexWrap: "wrap", justifyContent: "center" }}>
               {tDesc.map((tok, i) => (
                 <motion.span
                   key={`td-${i}-${tok}`}
@@ -278,16 +353,24 @@ function HeroContent({ lang, t }) {
             </span>
           </motion.p>
 
-          {/* CTAs (incl. eyebrow pill) — gated by subtitle */}
+          {/* CTAs — gated by subtitle */}
           <motion.div
             className="cta-row"
-            initial={{ opacity:0, y:8 }}
-            animate={descDone ? { opacity:1, y:0 } : { opacity:0, y:8 }}
-            transition={{ duration:0.45, ease:[0.22,1,0.36,1] }}
+            initial={{ opacity: 0, y: 8 }}
+            animate={descDone ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            style={{ marginTop: 14, display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}
           >
-            <a href="#products" className="eyebrow-btn" onClick={onAnchorClick}>{eyebrow}</a>
-            <a className="btn" href="#products" onClick={onAnchorClick}>{t("hero.ctaView", { defaultValue:"View products" })}</a>
-            <a className="btn ghost" href="#contact" onClick={onAnchorClick}>{t("hero.ctaContact", { defaultValue:"Contact us" })}</a>
+            <a href="#products" className="eyebrow-btn" onClick={onAnchorClick}>
+              {eyebrow}
+            </a>
+            <a className="btn" href="#products" onClick={onAnchorClick}>
+              {t("hero.ctaView", { defaultValue: "View products" })}
+            </a>
+            <a className="btn ghost" href="#contact" onClick={onAnchorClick}>
+              {t("hero.ctaContact", { defaultValue: "Contact us" })}
+            </a>
+          </motion.div>
         </div>
       </div>
     </section>
