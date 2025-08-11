@@ -271,12 +271,11 @@ function Hero() {
 
           {/* CTAs — appear only after subtitle finishes */}
           <motion.div
+            className="cta-row"
             initial={{ opacity: 0, y: 8 }}
             animate={descDone ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
-            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            style={{ marginTop: 18, display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}
+            transition={{ duration: 0.45, ease: [0.22,1,0.36,1] }}
           >
-            {/* NEW: clickable pill (same timing as the buttons) */}
             <a href="#products" className="eyebrow-btn">
               {t("hero.eyebrow", { defaultValue: "Software · AI · Cloud" })}
             </a>

@@ -279,3 +279,44 @@ html{
   border-color:rgba(2,6,23,.12);
   background:rgba(2,6,23,.06);
 }
+
+/* CTA row */
+.cta-row{
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;          /* fixes vertical misalignment */
+  gap: 10px;
+}
+
+/* Eyebrow pill as a button */
+.eyebrow-btn{
+  display: inline-flex;         /* enables perfect centering */
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;           /* tweak to match your .btn height */
+  min-height: 44px;             /* keep inline with .btn */
+  border-radius: 999px;
+  box-sizing: border-box;
+  font-size: 14px;
+  line-height: 1;
+  white-space: nowrap;          /* auto width, no internal wrapping */
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+  transition: transform .18s, background-color .18s, border-color .18s, opacity .18s;
+}
+.eyebrow-btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.10); }
+[data-theme="light"] .eyebrow-btn{
+  border-color: rgba(2,6,23,.12);
+  background: rgba(2,6,23,.06);
+}
+
+/* Put the pill on its own line and center it */
+.cta-row .eyebrow-btn{
+  flex-basis: 100%;             /* own line */
+  text-align: center;
+  margin-bottom: 2px;           /* tiny spacing above buttons */
+}
