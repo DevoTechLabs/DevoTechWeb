@@ -121,10 +121,16 @@ function Logo() {
 
 function Hero() {
   const { t, i18n } = useTranslation();
-  const HERO_H = "clamp(420px, 82vh, 900px)";
   const lang = (i18n.resolvedLanguage || "en").split("-")[0];
 
-  // wrap Title 1 on phones
+  // Remount everything below when language changes (state resets before paint)
+  return <HeroContent key={lang} lang={lang} t={t} />;
+}
+
+function HeroContent({ lang, t }) {
+  const HERO_H = "clamp(420px, 82vh, 900px)";
+
+  // Wrap Title 1 on phones
   const [isNarrow, setIsNarrow] = useState(false);
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 560px)");
@@ -134,13 +140,13 @@ function Hero() {
     return () => mq.removeEventListener?.("change", onChange) || mq.removeListener(onChange);
   }, []);
 
-  // tokenization helpers
-  const hasCJK = (s) =>
+  // --- tokenizers ---
+  const hasCJK = s =>
     /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/u.test(s);
-  const normalizeSeps = (s) => s.replace(/[·•—–-]/g, m => ` ${m} `);
-  const tokenize = (s) => {
-    if (hasCJK(s)) return Array.from(s.replace(/\s+/g, ""));              // char-by-char for CJK
-    const norm = normalizeSeps(s).replace(/\s+/g, " ").trim();            // word-by-word otherwise
+  const normalizeSeps = s => s.replace(/[·•—–-]/g, m => ` ${m} `);
+  const tokenize = s => {
+    if (hasCJK(s)) return Array.from(s.replace(/\s+/g, ""));     // per-char for CJK
+    const norm = normalizeSeps(s).replace(/\s+/g, " ").trim();   // per-word otherwise
     return norm ? norm.split(" ") : [];
   };
 
@@ -148,24 +154,26 @@ function Hero() {
   const raw1    = t("hero.title1", { defaultValue: "Devotion · Evolution · Volition" });
   const raw2    = t("hero.title2", { defaultValue: "DevoTech keeps you on track" });
   const rawDesc = t("hero.desc",   { defaultValue: "Custom software · Mobile · AI & Data · Cloud-native · Ops" });
+  const eyebrow = t("hero.eyebrow", { defaultValue: "Software · AI · Cloud" });
 
   // tokens
   const t1    = tokenize(raw1);
   const t2    = tokenize(raw2);
   const tDesc = tokenize(rawDesc);
 
-  // sequencing gates
+  // sequencing gates (fresh on remount because of key={lang})
   const [t1Done,   setT1Done]   = useState(false);
   const [t2Done,   setT2Done]   = useState(false);
   const [descDone, setDescDone] = useState(false);
-  useEffect(() => { setT1Done(false); setT2Done(false); setDescDone(false); }, [lang, raw1, raw2, rawDesc]);
 
-  // timing: slow for Title 1, fast for Title 2 + subtitle
-  const containerSlow = { hidden: {}, show: { transition: { staggerChildren: 0.28, delayChildren: 0.20 } } };
-  const tokenSlow     = { hidden: { opacity:0, y:16, filter:"blur(10px)" }, show:{ opacity:1, y:0, filter:"blur(0px)", transition:{ duration:0.70, ease:[0.22,1,0.36,1] } } };
+  // timings
+  const containerSlow = { hidden: {}, show: { transition: { staggerChildren: 0.12, delayChildren: 0.20 } } };
+  const tokenSlow     = { hidden: { opacity:0, y:16, filter:"blur(10px)" },
+                          show:   { opacity:1, y:0, filter:"blur(0px)", transition:{ duration:0.70, ease:[0.22,1,0.36,1] } } };
 
   const containerFast = { hidden: {}, show: { transition: { staggerChildren: 0.06, delayChildren: 0.12 } } };
-  const tokenFast     = { hidden: { opacity:0, y:14, filter:"blur(8px)"  }, show:{ opacity:1, y:0, filter:"blur(0px)",  transition:{ duration:0.55, ease:[0.22,1,0.36,1] } } };
+  const tokenFast     = { hidden: { opacity:0, y:14, filter:"blur(8px)" },
+                          show:   { opacity:1, y:0, filter:"blur(0px)", transition:{ duration:0.55, ease:[0.22,1,0.36,1] } } };
 
   return (
     <section
@@ -195,10 +203,9 @@ function Hero() {
       {/* content */}
       <div style={{ position:"relative", zIndex:2, display:"grid", placeItems:"center", minHeight:HERO_H, paddingInline:16 }}>
         <div style={{ maxWidth:1100, marginInline:"auto", width:"100%", textAlign:"center" }}>
-          
-          {/* titles */}
+
+          {/* Titles */}
           <motion.h1
-            key={lang}
             style={{ marginTop:14, lineHeight:1.1 }}
             initial="hidden"
             whileInView="show"
@@ -208,7 +215,7 @@ function Hero() {
             <motion.span
               className="hero-title1"
               variants={containerSlow}
-              style={{ display:"inline-flex", flexWrap:isNarrow ? "wrap" : "nowrap", gap:"0.38ch", justifyContent:"center" }}
+              style={{ display:"inline-flex", flexWrap: isNarrow ? "wrap" : "nowrap", gap:"0.38ch", justifyContent:"center" }}
             >
               {t1.map((tok, i) => (
                 <motion.span
@@ -223,10 +230,9 @@ function Hero() {
               ))}
             </motion.span>
 
-            {/* Title 2 — fast, starts only after Title 1 */}
+            {/* Title 2 — fast, gated by Title 1 */}
             <div style={{ display:"flex", justifyContent:"center" }}>
               <motion.span
-                key={lang + "-t2"}
                 className="hero-title2"
                 variants={containerFast}
                 initial="hidden"
@@ -247,7 +253,7 @@ function Hero() {
             </div>
           </motion.h1>
 
-          {/* Subtitle — fast, starts only after Title 2 */}
+          {/* Subtitle — fast, gated by Title 2 */}
           <motion.p
             className="hero-desc"
             variants={containerFast}
@@ -269,29 +275,23 @@ function Hero() {
             </span>
           </motion.p>
 
-          {/* CTAs — appear only after subtitle finishes */}
+          {/* CTAs (incl. eyebrow pill) — gated by subtitle */}
           <motion.div
             className="cta-row"
-            initial={{ opacity: 0, y: 8 }}
-            animate={descDone ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
-            transition={{ duration: 0.45, ease: [0.22,1,0.36,1] }}
+            initial={{ opacity:0, y:8 }}
+            animate={descDone ? { opacity:1, y:0 } : { opacity:0, y:8 }}
+            transition={{ duration:0.45, ease:[0.22,1,0.36,1] }}
           >
-            <a href="#products" className="eyebrow-btn">
-              {t("hero.eyebrow", { defaultValue: "Software · AI · Cloud" })}
-            </a>
-
-            <a className="btn" href="#products">
-              {t("hero.ctaView", { defaultValue: "View products" })}
-            </a>
-            <a className="btn ghost" href="#contact">
-              {t("hero.ctaContact", { defaultValue: "Contact us" })}
-            </a>
+            <a href="#products" className="eyebrow-btn">{eyebrow}</a>
+            <a className="btn" href="#products">{t("hero.ctaView", { defaultValue:"View products" })}</a>
+            <a className="btn ghost" href="#contact">{t("hero.ctaContact", { defaultValue:"Contact us" })}</a>
           </motion.div>
         </div>
       </div>
     </section>
   );
 }
+
 
 const FadeIn = ({ children, delay = 0 }) => (
   <motion.div
