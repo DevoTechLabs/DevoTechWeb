@@ -8,7 +8,7 @@ import Partners from "./components/Partners.jsx";
 import QuickDock from "./components/QuickDock.jsx";
 import LangDropdown from "./components/LangDropdown.jsx";
 import ThemeSwitch from "./components/ThemeSwitch.jsx";
-import { onAnchorClick } from "./utils/smartScroll.js";
+import { onAnchorClick } from "./utils/smoothScroll.js";
 
 function useDarkMode() {
   const [theme, setTheme] = useState(

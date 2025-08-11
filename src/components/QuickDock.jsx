@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import LangDropdown from "./LangDropdown.jsx";
 import ThemeSwitch from "./ThemeSwitch.jsx";
-import { onAnchorClick } from "../utils/smartScroll.js";
+import { onAnchorClick } from "../utils/smoothScroll.js";
 
 
 export default function QuickDock() {
