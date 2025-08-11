@@ -6,6 +6,8 @@ import { motion, useScroll, useTransform, useMotionTemplate } from "framer-motio
 import { useTranslation } from 'react-i18next'; // language switch
 import Partners from "./components/Partners.jsx";
 import QuickDock from "./components/QuickDock.jsx";
+import LangSwitch from "./LangSwitch.jsx";
+import ThemeSwitch from "./ThemeSwitch.jsx";
 
 function useDarkMode() {
   const [theme, setTheme] = useState(
@@ -22,12 +24,13 @@ function useDarkMode() {
 
 function Header() {
   const { t, i18n } = useTranslation();
-  const { theme, setTheme } = useDarkMode();
   const [open, setOpen] = useState(false);
+
   const { scrollYProgress } = useScroll();
   const bgOpacity = useTransform(scrollYProgress, [0, 0.15, 1], [0.25, 0.6, 0.85]);
   const bg = useMotionTemplate`rgba(2,6,23, ${bgOpacity})`;
-  const lang = (i18n.resolvedLanguage || i18n.language || 'en').split('-')[0];
+
+  const lang = (i18n.resolvedLanguage || i18n.language || "en").split("-")[0];
 
   useEffect(() => {
     const onHash = () => setOpen(false);
@@ -38,71 +41,74 @@ function Header() {
   return (
     <motion.header className="header" style={{ backgroundColor: bg }}>
       <div className="container nav">
+        {/* Left: brand */}
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <Logo />
-          <span style={{ fontWeight: 800, letterSpacing: 0.3 }}>{t("brand", { defaultValue: "DevoTech" })}</span>
+          <span style={{ fontWeight: 800, letterSpacing: 0.3 }}>
+            {t("brand", { defaultValue: "DevoTech" })}
+          </span>
         </div>
 
+        {/* Desktop nav */}
         <nav className="nav-desktop" aria-label="Primary">
-          <a href="#home">{t("nav.home", { defaultValue: "首页" })}</a>
-          <a href="#products">{t("nav.products", { defaultValue: "产品" })}</a>
-          <a href="#services">{t("nav.services", { defaultValue: "服务" })}</a>
-          <a href="#portfolio">{t("nav.portfolio", { defaultValue: "案例" })}</a>
-          <a href="#team">{t("nav.team", { defaultValue: "团队" })}</a>
-          <a href="#careers">{t("nav.careers", { defaultValue: "招聘" })}</a>
-          <a href="#blog">{t("nav.blog", { defaultValue: "博客" })}</a>
+          <a href="#home">{t("nav.home", { defaultValue: "Home" })}</a>
+          <a href="#products">{t("nav.products", { defaultValue: "Products" })}</a>
+          <a href="#services">{t("nav.services", { defaultValue: "Services" })}</a>
+          <a href="#portfolio">{t("nav.portfolio", { defaultValue: "Cases" })}</a>
+          <a href="#team">{t("nav.team", { defaultValue: "Team" })}</a>
+          <a href="#careers">{t("nav.careers", { defaultValue: "Careers" })}</a>
+          <a href="#blog">{t("nav.blog", { defaultValue: "Blog" })}</a>
           <a href="#faq">{t("nav.faq", { defaultValue: "FAQ" })}</a>
-          <a href="#contact">{t("nav.contact", { defaultValue: "联系" })}</a>
+          <a href="#contact">{t("nav.contact", { defaultValue: "Contact" })}</a>
         </nav>
 
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <select
-            aria-label={t('lang.select', { defaultValue: 'Language' })}
-            className="btn ghost"
+        {/* Right: controls */}
+        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          {/* Language segmented (theme-aware) */}
+          <LangSwitch
             value={lang}
-            onChange={(e) => i18n.changeLanguage(e.target.value)}
+            onChange={(code) => i18n.changeLanguage(code)}
+            size="sm"
+            ariaLabel={t("lang.select", { defaultValue: "Language" })}
+          />
+          {/* Theme segmented (Dark/Light) */}
+          <ThemeSwitch size="sm" />
+
+          {/* Mobile menu toggle */}
+          <button
+            className="btn menu-btn"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-controls="mobile-menu"
           >
-            <option value="en">EN</option>
-            <option value="zh">CN</option>
-            <option value="fr">FR</option>
-          </select>
-
-          <button className="btn ghost" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} aria-label="切换主题">
-            {theme === "dark" ? "Light" : "Dark"}
-          </button>
-
-          <button className="btn menu-btn" onClick={() => setOpen(v => !v)} aria-expanded={open} aria-controls="mobile-menu">
-            菜单
+            Menu
           </button>
 
           <a className="btn" href="#contact">Get in Touch</a>
         </div>
       </div>
 
+      {/* Mobile menu */}
       {open && (
         <div id="mobile-menu" className="container" style={{ paddingBottom: 12 }}>
-          <div className="card" style={{ display: "grid", gap: 8 }}>
-            <select
-              aria-label={t('lang.select', { defaultValue: 'Language' })}
-              className="btn ghost"
+          <div className="card" style={{ display: "grid", gap: 10 }}>
+            <LangSwitch
               value={lang}
-              onChange={(e) => i18n.changeLanguage(e.target.value)}
-              style={{ marginBottom: 8, width: "100%" }}
-            >
-              <option value="en">EN</option>
-              <option value="zh">中文</option>
-              <option value="fr">FR</option>
-            </select>
+              onChange={(code) => i18n.changeLanguage(code)}
+              size="md"
+              ariaLabel={t("lang.select", { defaultValue: "Language" })}
+            />
+            <ThemeSwitch size="md" />
 
-            <a href="#home">{t("nav.home", { defaultValue: "首页" })}</a>
-            <a href="#products">{t("nav.products", { defaultValue: "产品" })}</a>
-            <a href="#services">{t("nav.services", { defaultValue: "服务" })}</a>
-            <a href="#portfolio">{t("nav.portfolio", { defaultValue: "案例" })}</a>
-            <a href="#team">{t("nav.team", { defaultValue: "团队" })}</a>
-            <a href="#careers">{t("nav.careers", { defaultValue: "招聘" })}</a>
-            <a href="#blog">{t("nav.blog", { defaultValue: "博客" })}</a>
+            <a href="#home">{t("nav.home", { defaultValue: "Home" })}</a>
+            <a href="#products">{t("nav.products", { defaultValue: "Products" })}</a>
+            <a href="#services">{t("nav.services", { defaultValue: "Services" })}</a>
+            <a href="#portfolio">{t("nav.portfolio", { defaultValue: "Cases" })}</a>
+            <a href="#team">{t("nav.team", { defaultValue: "Team" })}</a>
+            <a href="#careers">{t("nav.careers", { defaultValue: "Careers" })}</a>
+            <a href="#blog">{t("nav.blog", { defaultValue: "Blog" })}</a>
             <a href="#faq">{t("nav.faq", { defaultValue: "FAQ" })}</a>
-            <a href="#contact">{t("nav.contact", { defaultValue: "联系" })}</a>
+            <a href="#contact">{t("nav.contact", { defaultValue: "Contact" })}</a>
           </div>
         </div>
       )}
@@ -646,7 +652,7 @@ export default function App() {
       <Header />
       <Hero />
       <QuickDock />   {/* <-- floating fast navigation */}
-      
+
       {/* NEW: real logo grid */}
       <Partners />
 
