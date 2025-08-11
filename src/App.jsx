@@ -88,7 +88,7 @@ function Header() {
       {open && (
         <div id="mobile-menu" className="container" style={{ paddingBottom: 12 }}>
           <div className="card" style={{ display: "grid", gap: 10 }}>
-            <LangSwitch
+            <LangDropdown
               value={lang}
               onChange={(code) => i18n.changeLanguage(code)}
               size="md"
@@ -323,67 +323,69 @@ function FadeIn({ children, delay = 0, y = 12, amount = 0.35 }) {
   );
 }
 
-function useSmartAnchorScroll() {
+/** Global distance-based smooth scrolling for in-page anchors */
+function useGlobalSmartScroll() {
   React.useEffect(() => {
-    const prefersReduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const scroller =
+      document.scrollingElement || document.documentElement; // robust target
+
+    const prefersReduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
 
     // easeInOutCubic
     const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
-    const animateScroll = (from, to, done) => {
+    const animateTo = (to) => {
+      const from = scroller.scrollTop;
       const distance = Math.abs(to - from);
+      const duration = Math.min(1400, Math.max(350, (distance / 1600) * 1000)); // ms
 
-      // duration scales with distance (clamped 350–1400ms)
-      const duration = Math.min(1.4, Math.max(0.35, distance / 1600)); // seconds
-      const start = performance.now();
-
-      const step = (now) => {
-        const t = Math.min(1, (now - start) / (duration * 1000));
+      const t0 = performance.now();
+      const tick = (now) => {
+        const t = Math.min(1, (now - t0) / duration);
         const v = ease(t);
-        window.scrollTo(0, from + (to - from) * v);
-        if (t < 1) requestAnimationFrame(step);
-        else done?.();
+        scroller.scrollTop = from + (to - from) * v;
+        if (t < 1) requestAnimationFrame(tick);
       };
-      requestAnimationFrame(step);
+      requestAnimationFrame(tick);
+    };
+
+    const getHeaderOffset = () => {
+      const header = document.querySelector(".header");
+      return (header?.offsetHeight || 68) + 12;
     };
 
     const onClickCapture = (e) => {
-      // Find anchor with a hash href in the ancestry
+      // respect already-handled/modified clicks
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
       const a = e.target.closest('a[href^="#"]');
       if (!a) return;
 
-      const raw = a.getAttribute("href") || "";
-      if (raw === "#" || raw === "#!") return; // ignore empty hashes
+      const href = a.getAttribute("href") || "";
+      if (href === "#" || href === "#!") return;
 
-      const id = decodeURIComponent(raw.slice(1));
-      const el = document.getElementById(id);
-      if (!el) return; // not an in-page target → let browser handle
+      const id = decodeURIComponent(href.slice(1));
+      const target = document.getElementById(id);
+      if (!target) return; // not an in-page target → let browser handle
 
-      // We will handle this one
       e.preventDefault();
 
-      const header = document.querySelector(".header");
-      const offset = (header?.offsetHeight || 68) + 12;
-      const targetY = Math.max(0, window.pageYOffset + el.getBoundingClientRect().top - offset);
+      const to =
+        Math.max(0, scroller.scrollTop + target.getBoundingClientRect().top - getHeaderOffset());
 
-      if (prefersReduce) {
-        window.scrollTo(0, targetY);
-        history.pushState(null, "", "#" + id);
-        return;
+      if (prefersReduced) {
+        scroller.scrollTop = to;
+      } else {
+        animateTo(to);
       }
 
-      const startY = window.scrollY;
-      animateScroll(startY, targetY, () => {
-        history.pushState(null, "", "#" + id);
-      });
+      // update the hash without triggering the browser's default jump
+      history.pushState(null, "", "#" + id);
     };
 
-    // Use capture so we beat any stopPropagation in child libs
+    // capture phase ensures we run before any stopPropagation
     document.addEventListener("click", onClickCapture, { capture: true });
-
-    return () => {
-      document.removeEventListener("click", onClickCapture, { capture: true });
-    };
+    return () => document.removeEventListener("click", onClickCapture, { capture: true });
   }, []);
 }
 
@@ -723,7 +725,7 @@ function Footer() {
 }
 
 export default function App() {
-  useSmartAnchorScroll(); // ← enable smart scrolling everywhere
+  useGlobalSmartScroll();
   return (
     <>
       <Header />
