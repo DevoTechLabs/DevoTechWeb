@@ -325,13 +325,13 @@ html{
 .quickdock.rb{
   position: fixed;
   z-index: 120;
-  right: 20px;                 /* spacing from right edge */
-  bottom: 20px;                /* spacing from bottom edge */
-  pointer-events: none;        /* only inner elements clickable */
+  right: 20px;                /* spacing from right edge */
+  bottom: 20px;               /* spacing from bottom edge */
+  pointer-events: none;       /* wrapper inert */
 }
-
 .quickdock .dock{
-  pointer-events: auto;
+  position: relative;         /* anchor for popover */
+  pointer-events: auto;       /* bar clickable */
   display: flex;
   gap: 8px;
   padding: 10px;
@@ -342,18 +342,24 @@ html{
   backdrop-filter: blur(12px);
 }
 
+/* Uniform buttons (anchors + <button>) */
 .dock-btn{
+  appearance: none;           /* reset native button look */
+  -webkit-appearance: none;
   display: inline-flex;
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
+  min-height: 36px;           /* match scale */
   border-radius: 999px;
-  text-decoration: none;
+  font: inherit;
+  line-height: 1;
   color: inherit;
-  border: 1px solid transparent;
   background: transparent;
-  transition: transform .16s ease, background-color .16s ease, border-color .16s ease;
+  text-decoration: none;
+  border: 1px solid transparent;
   cursor: pointer;
+  transition: transform .16s ease, background-color .16s ease, border-color .16s ease;
 }
 .dock-btn:hover{
   background: rgba(255,255,255,.08);
@@ -361,11 +367,12 @@ html{
   transform: translateY(-1px);
 }
 
-/* Popover */
+/* Popover anchored to dock (bottom-right) */
 .dock-pop{
   position: absolute;
-  right: 20px;   /* align with dock’s right spacing */
-  bottom: 64px;  /* pop above the dock */
+  right: 0;                   /* align to dock right edge */
+  bottom: calc(100% + 12px);  /* above the dock */
+  z-index: 200;
   min-width: 280px;
   max-width: 90vw;
   padding: 10px;
@@ -374,47 +381,16 @@ html{
   background: rgba(2,6,23,.75);
   box-shadow: 0 16px 40px rgba(0,0,0,.35);
   backdrop-filter: blur(12px);
+  pointer-events: auto;       /* clickable! */
 }
 
-.pop-grid{
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0,1fr));
-  gap: 8px;
-}
-.pop-item{
-  display: block;
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid transparent;
-  color: inherit;
-  text-decoration: none;
-  background: rgba(255,255,255,.04);
-  transition: background-color .16s ease, border-color .16s ease, transform .16s ease;
-}
-.pop-item:hover{ background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.12); transform: translateY(-1px); }
-
-.pop-row{
-  margin-top: 10px;
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  justify-content: space-between;
-}
-.pop-select, .pop-btn{
-  height: 36px;
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,.12);
-  background: rgba(255,255,255,.06);
-  color: inherit;
-  padding: 0 10px;
-}
-.pop-btn{
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  text-decoration: none;
-  cursor: pointer;
-}
+/* grid + controls (unchanged from before) */
+.pop-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+.pop-item{ display:block; padding:10px 12px; border-radius:10px; border:1px solid transparent; color:inherit; text-decoration:none; background:rgba(255,255,255,.04); transition:background-color .16s, border-color .16s, transform .16s; }
+.pop-item:hover{ background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.12); transform:translateY(-1px); }
+.pop-row{ margin-top:10px; display:flex; gap:8px; align-items:center; justify-content:space-between; }
+.pop-select, .pop-btn{ height:36px; border-radius:8px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.06); color:inherit; padding:0 10px; }
+.pop-btn{ display:inline-flex; align-items:center; gap:6px; text-decoration:none; cursor:pointer; }
 
 /* Light theme */
 [data-theme="light"] .quickdock .dock{ background: rgba(255,255,255,.65); border-color: rgba(2,6,23,.12); }
@@ -423,12 +399,8 @@ html{
 [data-theme="light"] .pop-item{ background: rgba(2,6,23,.04); }
 [data-theme="light"] .pop-item:hover{ background: rgba(2,6,23,.08); border-color: rgba(2,6,23,.12); }
 
-/* Mobile: icon-only dock */
+/* Mobile: icon-only */
 @media (max-width: 720px){
   .quickdock.rb{ right: 12px; bottom: 12px; }
   .dock-btn .label{ display: none; }
 }
-
-.quickdock { pointer-events: none; }           /* keep wrapper inert */
-.quickdock .dock { pointer-events: auto; }     /* bar is clickable */
-.quickdock .dock-pop { pointer-events: auto; } /* <-- make popover clickable too */
