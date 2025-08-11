@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import LangSwitch from "./LangSwitch.jsx";
+import LangSwitch from "./LangDropdown.jsx";
 import ThemeSwitch from "./ThemeSwitch.jsx";
 
 export default function QuickDock() {

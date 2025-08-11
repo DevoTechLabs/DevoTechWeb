@@ -6,7 +6,7 @@ import { motion, useScroll, useTransform, useMotionTemplate } from "framer-motio
 import { useTranslation } from 'react-i18next'; // language switch
 import Partners from "./components/Partners.jsx";
 import QuickDock from "./components/QuickDock.jsx";
-import LangSwitch from "./components/LangSwitch.jsx";
+import LangDropdown from "./components/LangDropdown.jsx";
 import ThemeSwitch from "./components/ThemeSwitch.jsx";
 
 function useDarkMode() {
@@ -62,18 +62,16 @@ function Header() {
           <a href="#contact">{t("nav.contact", { defaultValue: "Contact" })}</a>
         </nav>
 
-        {/* Right: controls */}
-        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          {/* Language segmented (theme-aware) */}
-          <LangSwitch
-            value={lang}
-            onChange={(code) => i18n.changeLanguage(code)}
-            size="sm"
-            ariaLabel={t("lang.select", { defaultValue: "Language" })}
-          />
-          {/* Theme segmented (Dark/Light) */}
-          <ThemeSwitch size="sm" />
-
+          {/* Right: controls */}
+          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+            <LangDropdown
+              value={lang}
+              onChange={(code) => i18n.changeLanguage(code)}
+              size="sm"
+              ariaLabel={t("lang.select", { defaultValue: "Language" })}
+            />
+            <ThemeSwitch size="sm" />
+          
           {/* Mobile menu toggle */}
           <button
             className="btn menu-btn"
