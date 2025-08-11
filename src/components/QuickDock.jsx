@@ -3,8 +3,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import LangDropdown from "./LangDropdown.jsx";
 import ThemeSwitch from "./ThemeSwitch.jsx";
-import { onAnchorClick } from "../utils/smoothScroll.js";
-
 
 export default function QuickDock() {
   const { t, i18n } = useTranslation();
@@ -35,17 +33,12 @@ export default function QuickDock() {
     return cleanup;
   }, []);
 
-  // Close popover on outside click (robust)
+// Close popover whenever the URL hash changes (native anchor navigation)
   useEffect(() => {
-    const onPointerDown = (e) => {
-      if (!menuOpen) return;
-      if (popRef.current && popRef.current.contains(e.target)) return;
-      if (btnRef.current && btnRef.current.contains(e.target)) return;
-      setMenuOpen(false);
-    };
-    window.addEventListener("pointerdown", onPointerDown);
-    return () => window.removeEventListener("pointerdown", onPointerDown);
-  }, [menuOpen]);
+    const onHash = () => setMenuOpen(false);
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
 
   const labels = {
     home:      t("nav.home",      { defaultValue: "Home" }),
@@ -84,7 +77,7 @@ export default function QuickDock() {
             <a
               className="dock-btn"
               href="#home"
-              onClick={onAnchorClick}
+               
               title={labels.home}
             >
               <HomeIcon />
@@ -94,7 +87,7 @@ export default function QuickDock() {
             <a
               className="dock-btn"
               href="#products"
-              onClick={onAnchorClick}
+               
               title={labels.products}
             >
               <BoxIcon />
@@ -104,7 +97,7 @@ export default function QuickDock() {
             <a
               className="dock-btn"
               href="#portfolio"
-              onClick={onAnchorClick}
+               
               title={labels.portfolio}
             >
               <CaseIcon />
@@ -114,7 +107,7 @@ export default function QuickDock() {
             <a
               className="dock-btn"
               href="#contact"
-              onClick={onAnchorClick}
+               
               title={labels.contact}
             >
               <MailIcon />
@@ -149,19 +142,19 @@ export default function QuickDock() {
                   role="menu"
                 >
                   <div className="pop-grid">
-                    <a href="#services" className="pop-item" role="menuitem" onClick={(e)=>{ onAnchorClick(e); setMenuOpen(false); }}>
+                    <a href="#services" className="pop-item" role="menuitem" onClick={()=> setMenuOpen(false)}>
                       {labels.services}
                     </a>
-                    <a href="#team" className="pop-item" role="menuitem" onClick={(e)=>{ onAnchorClick(e); setMenuOpen(false); }}>
+                    <a href="#team" className="pop-item" role="menuitem" onClick={()=> setMenuOpen(false)}>
                       {labels.team}
                     </a>
-                    <a href="#careers" className="pop-item" role="menuitem" onClick={(e)=>{ onAnchorClick(e); setMenuOpen(false); }}>
+                    <a href="#careers" className="pop-item" role="menuitem" onClick={()=> setMenuOpen(false)}>
                       {labels.careers}
                     </a>
-                    <a href="#blog" className="pop-item" role="menuitem" onClick={(e)=>{ onAnchorClick(e); setMenuOpen(false); }}>
+                    <a href="#blog" className="pop-item" role="menuitem" onClick={()=> setMenuOpen(false)}>
                       {labels.blog}
                     </a>
-                    <a href="#faq" className="pop-item" role="menuitem" onClick={(e)=>{ onAnchorClick(e); setMenuOpen(false); }}>
+                    <a href="#faq" className="pop-item" role="menuitem" onClick={()=> setMenuOpen(false)}>
                       {labels.faq}
                     </a>
                   </div>

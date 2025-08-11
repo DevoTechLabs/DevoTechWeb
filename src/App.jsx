@@ -8,7 +8,6 @@ import Partners from "./components/Partners.jsx";
 import QuickDock from "./components/QuickDock.jsx";
 import LangDropdown from "./components/LangDropdown.jsx";
 import ThemeSwitch from "./components/ThemeSwitch.jsx";
-import { onAnchorClick } from "./utils/smoothScroll.js";
 
 function useDarkMode() {
   const [theme, setTheme] = useState(
@@ -52,15 +51,15 @@ function Header() {
 
         {/* Desktop nav */}
         <nav className="nav-desktop" aria-label="Primary">
-          <a href="#home" onClick={onAnchorClick}>{t("nav.home", { defaultValue: "Home" })}</a>
-          <a href="#products" onClick={onAnchorClick}>{t("nav.products", { defaultValue: "Products" })}</a>
-          <a href="#services" onClick={onAnchorClick}>{t("nav.services", { defaultValue: "Services" })}</a>
-          <a href="#portfolio" onClick={onAnchorClick}>{t("nav.portfolio", { defaultValue: "Cases" })}</a>
-          <a href="#team" onClick={onAnchorClick}>{t("nav.team", { defaultValue: "Team" })}</a>
-          <a href="#careers" onClick={onAnchorClick}>{t("nav.careers", { defaultValue: "Careers" })}</a>
-          <a href="#blog" onClick={onAnchorClick}>{t("nav.blog", { defaultValue: "Blog" })}</a>
-          <a href="#faq" onClick={onAnchorClick}>{t("nav.faq", { defaultValue: "FAQ" })}</a>
-          <a href="#contact" onClick={onAnchorClick}>{t("nav.contact", { defaultValue: "Contact" })}</a>
+          <a href="#home">{t("nav.home", { defaultValue: "Home" })}</a>
+          <a href="#products">{t("nav.products", { defaultValue: "Products" })}</a>
+          <a href="#services">{t("nav.services", { defaultValue: "Services" })}</a>
+          <a href="#portfolio">{t("nav.portfolio", { defaultValue: "Cases" })}</a>
+          <a href="#team">{t("nav.team", { defaultValue: "Team" })}</a>
+          <a href="#careers">{t("nav.careers", { defaultValue: "Careers" })}</a>
+          <a href="#blog">{t("nav.blog", { defaultValue: "Blog" })}</a>
+          <a href="#faq">{t("nav.faq", { defaultValue: "FAQ" })}</a>
+          <a href="#contact">{t("nav.contact", { defaultValue: "Contact" })}</a>
         </nav>
           {/* Right: controls */}
           <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
@@ -96,15 +95,15 @@ function Header() {
             />
             <ThemeSwitch size="md" />
 
-            <a href="#home" onClick={(e)=>{ onAnchorClick(e); setOpen(false); }}>{t("nav.home", { defaultValue: "Home" })}</a>
-            <a href="#products" onClick={(e)=>{ onAnchorClick(e); setOpen(false); }}>{t("nav.products", { defaultValue: "Products" })}</a>
-            <a href="#services" onClick={(e)=>{ onAnchorClick(e); setOpen(false); }}>{t("nav.services", { defaultValue: "Services" })}</a>
-            <a href="#portfolio" onClick={(e)=>{ onAnchorClick(e); setOpen(false); }}>{t("nav.portfolio", { defaultValue: "Cases" })}</a>
-            <a href="#team" onClick={(e)=>{ onAnchorClick(e); setOpen(false); }}>{t("nav.team", { defaultValue: "Team" })}</a>
-            <a href="#careers" onClick={(e)=>{ onAnchorClick(e); setOpen(false); }}>{t("nav.careers", { defaultValue: "Careers" })}</a>
-            <a href="#blog" onClick={(e)=>{ onAnchorClick(e); setOpen(false); }}>{t("nav.blog", { defaultValue: "Blog" })}</a>
-            <a href="#faq" onClick={(e)=>{ onAnchorClick(e); setOpen(false); }}>{t("nav.faq", { defaultValue: "FAQ" })}</a>
-            <a href="#contact" onClick={(e)=>{ onAnchorClick(e); setOpen(false); }}>{t("nav.contact", { defaultValue: "Contact" })}</a>
+            <a href="#home">{t("nav.home", { defaultValue: "Home" })}</a>
+            <a href="#products">{t("nav.products", { defaultValue: "Products" })}</a>
+            <a href="#services">{t("nav.services", { defaultValue: "Services" })}</a>
+            <a href="#portfolio">{t("nav.portfolio", { defaultValue: "Cases" })}</a>
+            <a href="#team">{t("nav.team", { defaultValue: "Team" })}</a>
+            <a href="#careers">{t("nav.careers", { defaultValue: "Careers" })}</a>
+            <a href="#blog">{t("nav.blog", { defaultValue: "Blog" })}</a>
+            <a href="#faq">{t("nav.faq", { defaultValue: "FAQ" })}</a>
+            <a href="#contact">{t("nav.contact", { defaultValue: "Contact" })}</a>
           </div>
         </div>
       )}
@@ -344,11 +343,11 @@ function HeroContent({ lang, t }) {
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
             style={{ marginTop: 14, display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}
           >
-            <a href="#products" className="eyebrow-btn" onClick={onAnchorClick}>{eyebrow}</a>
-            <a className="btn" href="#products" onClick={onAnchorClick}>
+            <a href="#products" className="eyebrow-btn"  >{eyebrow}</a>
+            <a className="btn" href="#products"  >
               {t("hero.ctaView", { defaultValue: "View products" })}
             </a>
-            <a className="btn ghost" href="#contact" onClick={onAnchorClick}>
+            <a className="btn ghost" href="#contact"  >
               {t("hero.ctaContact", { defaultValue: "Contact us" })}
             </a>
           </motion.div>
