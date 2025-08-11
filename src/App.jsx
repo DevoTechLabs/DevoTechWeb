@@ -327,18 +327,14 @@ function useSmartAnchorScroll() {
   React.useEffect(() => {
     const prefersReduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    const ease = (t) => {
-      // cubic-bezier(0.22, 1, 0.36, 1)
-      return t < 0.5
-        ? ( ( ( ( 1.0 ) * t - 0.22 ) * t + 0.0 ) * t ) * 2 // quick ease-in approximation
-        : 1 - Math.pow(1 - t, 3);                         // ease-out
-    };
+    // easeInOutCubic
+    const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
-    const animateScroll = (from, to, cb) => {
+    const animateScroll = (from, to, done) => {
       const distance = Math.abs(to - from);
-      // Duration depends on distance: clamp to [350ms, 1400ms]
-      const pxPerSec = 1600; // feel free to tune
-      const duration = Math.max(0.35, Math.min(1.4, distance / pxPerSec));
+
+      // duration scales with distance (clamped 350–1400ms)
+      const duration = Math.min(1.4, Math.max(0.35, distance / 1600)); // seconds
       const start = performance.now();
 
       const step = (now) => {
@@ -346,31 +342,29 @@ function useSmartAnchorScroll() {
         const v = ease(t);
         window.scrollTo(0, from + (to - from) * v);
         if (t < 1) requestAnimationFrame(step);
-        else cb?.();
+        else done?.();
       };
       requestAnimationFrame(step);
     };
 
-    const click = (e) => {
+    const onClickCapture = (e) => {
+      // Find anchor with a hash href in the ancestry
       const a = e.target.closest('a[href^="#"]');
       if (!a) return;
 
-      const raw = a.getAttribute("href");
-      const id = decodeURIComponent(raw.slice(1) || "");
-      if (!id) return;
+      const raw = a.getAttribute("href") || "";
+      if (raw === "#" || raw === "#!") return; // ignore empty hashes
 
+      const id = decodeURIComponent(raw.slice(1));
       const el = document.getElementById(id);
-      if (!el) return;
+      if (!el) return; // not an in-page target → let browser handle
 
+      // We will handle this one
       e.preventDefault();
 
       const header = document.querySelector(".header");
       const offset = (header?.offsetHeight || 68) + 12;
-
-      const targetY = Math.max(
-        0,
-        window.pageYOffset + el.getBoundingClientRect().top - offset
-      );
+      const targetY = Math.max(0, window.pageYOffset + el.getBoundingClientRect().top - offset);
 
       if (prefersReduce) {
         window.scrollTo(0, targetY);
@@ -384,8 +378,12 @@ function useSmartAnchorScroll() {
       });
     };
 
-    document.addEventListener("click", click);
-    return () => document.removeEventListener("click", click);
+    // Use capture so we beat any stopPropagation in child libs
+    document.addEventListener("click", onClickCapture, { capture: true });
+
+    return () => {
+      document.removeEventListener("click", onClickCapture, { capture: true });
+    };
   }, []);
 }
 

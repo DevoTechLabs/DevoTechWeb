@@ -523,9 +523,12 @@ html{
 /* Light theme tweak */
 [data-theme="light"] .pop-label{ opacity: .8; }
 
-/* Optional: stack nicely on small screens */
+/* Stack nicely on small screens */
 @media (max-width: 560px){
   .pop-row{ flex-wrap: wrap; }
   .pop-right{ margin-left: 0; width: 100%; justify-content: space-between; }
 }
 
+:root { --header-h: 68px; }
+@media (max-width: 720px){ :root { --header-h: 56px; } }
+[id] { scroll-margin-top: calc(var(--header-h) + 12px); }
