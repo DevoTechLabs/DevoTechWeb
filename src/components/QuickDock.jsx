@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import LangSwitch from "./LangDropdown.jsx";
+import LangDropdown from "./LangDropdown.jsx";
 import ThemeSwitch from "./ThemeSwitch.jsx";
 
 export default function QuickDock() {
@@ -13,7 +13,7 @@ export default function QuickDock() {
   const popRef = useRef(null);
   const btnRef = useRef(null);
 
-  // Show the dock when header leaves
+  // Show dock when header leaves the viewport
   useEffect(() => {
     const header = document.querySelector(".header");
     let cleanup = () => {};
@@ -46,10 +46,11 @@ export default function QuickDock() {
   }, [menuOpen]);
 
   const labels = {
+    home:      t("nav.home",      { defaultValue: "Home" }),
     products:  t("nav.products",  { defaultValue: "Products" }),
-    services:  t("nav.services",  { defaultValue: "Services" }),
     portfolio: t("nav.portfolio", { defaultValue: "Cases" }),
     contact:   t("nav.contact",   { defaultValue: "Contact" }),
+    services:  t("nav.services",  { defaultValue: "Services" }),
     careers:   t("nav.careers",   { defaultValue: "Careers" }),
     team:      t("nav.team",      { defaultValue: "Team" }),
     blog:      t("nav.blog",      { defaultValue: "Blog" }),
@@ -69,7 +70,7 @@ export default function QuickDock() {
     <AnimatePresence>
       {show && (
         <motion.nav aria-label={labels.quick} className="quickdock rb" {...dockFx}>
-          {/* the bar (keyed for smooth i18n crossfade) */}
+          {/* Bar (keyed so labels crossfade on language switch) */}
           <motion.div
             className="dock"
             key={lang}
@@ -78,10 +79,10 @@ export default function QuickDock() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18 }}
           >
-            <a className="dock-btn" href="#products"   title={labels.products}><BoxIcon /><span className="label">{labels.products}</span></a>
-            <a className="dock-btn" href="#services"   title={labels.services}><SparkIcon /><span className="label">{labels.services}</span></a>
-            <a className="dock-btn" href="#portfolio"  title={labels.portfolio}><CaseIcon /><span className="label">{labels.portfolio}</span></a>
-            <a className="dock-btn" href="#contact"    title={labels.contact}><MailIcon /><span className="label">{labels.contact}</span></a>
+            <a className="dock-btn" href="#home"      title={labels.home}><HomeIcon /><span className="label">{labels.home}</span></a>
+            <a className="dock-btn" href="#products"  title={labels.products}><BoxIcon /><span className="label">{labels.products}</span></a>
+            <a className="dock-btn" href="#portfolio" title={labels.portfolio}><CaseIcon /><span className="label">{labels.portfolio}</span></a>
+            <a className="dock-btn" href="#contact"   title={labels.contact}><MailIcon /><span className="label">{labels.contact}</span></a>
 
             {/* More */}
             <button
@@ -96,7 +97,7 @@ export default function QuickDock() {
               <DotsIcon /><span className="label">{labels.more}</span>
             </button>
 
-            {/* --- DOCK POP (the popover) --- */}
+            {/* Popover */}
             <AnimatePresence>
               {menuOpen && (
                 <motion.div
@@ -110,6 +111,7 @@ export default function QuickDock() {
                   role="menu"
                 >
                   <div className="pop-grid">
+                    <a href="#services" className="pop-item" role="menuitem">{labels.services}</a>
                     <a href="#team"     className="pop-item" role="menuitem">{labels.team}</a>
                     <a href="#careers"  className="pop-item" role="menuitem">{labels.careers}</a>
                     <a href="#blog"     className="pop-item" role="menuitem">{labels.blog}</a>
@@ -117,7 +119,7 @@ export default function QuickDock() {
                   </div>
 
                   <div className="pop-row">
-                    <LangSwitch
+                    <LangDropdown
                       value={lang}
                       onChange={(code) => i18n.changeLanguage(code)}
                       size="md"
@@ -128,7 +130,6 @@ export default function QuickDock() {
                 </motion.div>
               )}
             </AnimatePresence>
-            {/* --- /DOCK POP --- */}
           </motion.div>
         </motion.nav>
       )}
@@ -137,8 +138,32 @@ export default function QuickDock() {
 }
 
 /* tiny inline icons */
-const DotsIcon = () => (<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="2" fill="currentColor"/><circle cx="12" cy="12" r="2" fill="currentColor"/><circle cx="19" cy="12" r="2" fill="currentColor"/></svg>);
-const BoxIcon  = () => (<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7l9 5 9-5-9-4-9 4z" fill="none" stroke="currentColor" strokeWidth="2"/><path d="M3 7v10l9 5 9-5V7" fill="none" stroke="currentColor" strokeWidth="2"/></svg>);
-const SparkIcon= () => (<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5L12 2z" fill="none" stroke="currentColor" strokeWidth="2"/></svg>);
-const CaseIcon = () => (<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="12" rx="2" fill="none" stroke="currentColor" strokeWidth="2"/><path d="M9 7V5h6v2" fill="none" stroke="currentColor" strokeWidth="2"/></svg>);
-const MailIcon = () => (<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" strokeWidth="2"/><path d="M3 7l9 6 9-6" fill="none" stroke="currentColor" strokeWidth="2"/></svg>);
+const DotsIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="5" cy="12" r="2" fill="currentColor"/><circle cx="12" cy="12" r="2" fill="currentColor"/><circle cx="19" cy="12" r="2" fill="currentColor"/>
+  </svg>
+);
+const HomeIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M3 10.5 12 3l9 7.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M5 10v9h14v-9" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+  </svg>
+);
+const BoxIcon  = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M3 7l9 5 9-5-9-4-9 4z" fill="none" stroke="currentColor" strokeWidth="2"/>
+    <path d="M3 7v10l9 5 9-5V7" fill="none" stroke="currentColor" strokeWidth="2"/>
+  </svg>
+);
+const CaseIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+    <rect x="3" y="7" width="18" height="12" rx="2" fill="none" stroke="currentColor" strokeWidth="2"/>
+    <path d="M9 7V5h6v2" fill="none" stroke="currentColor" strokeWidth="2"/>
+  </svg>
+);
+const MailIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+    <rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" strokeWidth="2"/>
+    <path d="M3 7l9 6 9-6" fill="none" stroke="currentColor" strokeWidth="2"/>
+  </svg>
+);
