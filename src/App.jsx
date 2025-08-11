@@ -377,7 +377,6 @@ function HeroContent({ lang, t }) {
   );
 }
 
-
 function FadeIn({ children, delay = 0, y = 12, amount = 0.35 }) {
   const ref = React.useRef(null);
   const controls = useAnimation();
